@@ -12,18 +12,18 @@ export async function getModulesWithPermissionsService(
     'm.id as id',
     'm.name',
     db.raw(`
-      CASE
-        WHEN EXISTS (
+      IF (
+        EXISTS (
           SELECT 1
           FROM permission p
           WHERE
           p.module_id = m.id
-          ${filters?.role_id && `AND p.role_id = '${filters.role_id}'`}
-          ${filters?.channel_id && `AND p.channel_id = '${filters.channel_id}'`}
-        )
-      THEN TRUE
-      ELSE FALSE
-      END AS checked
+          ${filters?.role_id ? `AND p.role_id = '${filters.role_id}'` : ''}
+          ${filters?.channel_id ? `AND p.channel_id = '${filters.channel_id}'` : ''}
+        ),
+        TRUE,
+        FALSE
+      ) AS checked
     `),
     db.raw(`
       (
@@ -31,37 +31,37 @@ export async function getModulesWithPermissionsService(
           JSON_OBJECT(
             'id', sm.id,
             'name', sm.name,
-            'checked', CASE
-              WHEN EXISTS (
+            'checked', IF (
+              EXISTS (
                 SELECT 1
                 FROM permission p
                 WHERE
                 p.module_id = m.id
                 AND p.sub_module_id = sm.id
-                ${filters?.role_id && `AND p.role_id = '${filters.role_id}'`}
-                ${filters?.channel_id && `AND p.channel_id = '${filters.channel_id}'`}
-              )
-              THEN TRUE
-              ELSE FALSE
-            END,
+                ${filters?.role_id ? `AND p.role_id = '${filters.role_id}'` : ''}
+                ${filters?.channel_id ? `AND p.channel_id = '${filters.channel_id}'` : ''}
+              ),
+              TRUE,
+              FALSE
+            ),
             'actions', (
               SELECT JSON_ARRAYAGG(
                 JSON_OBJECT(
                   'id', ac.id,
                   'name', ac.name,
-                  'checked', CASE
-                    WHEN EXISTS (
+                  'checked', IF (
+                    EXISTS (
                       SELECT 1
                       FROM permission p
                       WHERE p.module_id = m.id
                         AND p.sub_module_id = sm.id
                         AND p.action_id = ac.id
-                        ${filters?.role_id && `AND p.role_id = '${filters.role_id}'`}
-                        ${filters?.channel_id && `AND p.channel_id = '${filters.channel_id}'`}
-                    )
-                    THEN TRUE
-                    ELSE FALSE
-                  END
+                        ${filters?.role_id ? `AND p.role_id = '${filters.role_id}'` : ''}
+                        ${filters?.channel_id ? `AND p.channel_id = '${filters.channel_id}'` : ''}
+                    ),
+                    TRUE,
+                    FALSE
+                  )
                 )
               )
               FROM action ac
@@ -71,6 +71,36 @@ export async function getModulesWithPermissionsService(
         FROM sub_module sm
         WHERE sm.module_id = m.id
       ) AS sub_modules
+    `),
+    db.raw(`
+      CASE
+        WHEN NOT EXISTS (
+          SELECT 1 FROM sub_module sm WHERE sm.module_id = m.id
+        )
+        THEN (
+          SELECT JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'id', ac.id,
+              'name', ac.name,
+              'checked', IF (
+                EXISTS (
+                  SELECT 1
+                  FROM permission p
+                  WHERE p.module_id = m.id
+                    AND p.sub_module_id IS NULL
+                    AND p.action_id = ac.id
+                    ${filters?.role_id ? `AND p.role_id = '${filters.role_id}'` : ''}
+                    ${filters?.channel_id ? `AND p.channel_id = '${filters.channel_id}'` : ''}
+                ),
+                TRUE,
+                FALSE
+              )
+            )
+          )
+          FROM action ac
+        )
+        ELSE NULL
+      END AS actions
     `)
   );
 
