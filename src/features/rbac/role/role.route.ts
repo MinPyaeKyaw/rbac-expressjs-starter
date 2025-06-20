@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import {
-  createRoles,
-  createOneRole,
-  deleteRoles,
-  deleteOneRole,
-  getAllRoles,
-  getOneRole,
-  softDeleteRoles,
-  softDeleteOneRole,
-  updateOneRole,
+  getAllRolesController,
+  getOneRoleController,
+  createOneRoleController,
+  createManyRolesController,
+  updateOneRoleController,
+  deleteOneRoleController,
+  deleteManyRolesController,
+  softDeleteOneRoleController,
+  softDeleteManyRolesController,
 } from './role.controller';
 import { validateRequest } from '../../../middlewares/validation';
 import validator from './role.validator';
@@ -17,11 +17,6 @@ import { ACTIONS, MODULES, ROLES, SUB_MODULES } from '../../../configs/rbac';
 
 const roleRoutes = Router();
 
-// =========================
-// GET /roles
-// - Get all roles
-// - Requires ADMIN role with VIEW permission
-// =========================
 roleRoutes.get(
   '/roles',
   verifyRBAC({
@@ -31,14 +26,9 @@ roleRoutes.get(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.select),
-  getAllRoles
+  getAllRolesController
 );
 
-// =========================
-// GET /roles/:id
-// - Get a specific role by ID
-// - Requires ADMIN role with VIEW permission
-// =========================
 roleRoutes.get(
   '/roles/:id',
   verifyRBAC({
@@ -48,14 +38,9 @@ roleRoutes.get(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.detail),
-  getOneRole
+  getOneRoleController
 );
 
-// =========================
-// POST /roles/create
-// - Create a single role
-// - Requires ADMIN role with CREATE permission
-// =========================
 roleRoutes.post(
   '/roles/create',
   verifyRBAC({
@@ -65,14 +50,9 @@ roleRoutes.post(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.create),
-  createOneRole
+  createOneRoleController
 );
 
-// =========================
-// POST /roles/create-multi
-// - Create multiple roles
-// - Requires ADMIN role with CREATE permission
-// =========================
 roleRoutes.post(
   '/roles/create-multi',
   verifyRBAC({
@@ -81,15 +61,10 @@ roleRoutes.post(
     module: MODULES.USER_MANAGEMENT,
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
-  validateRequest(validator.createMulti),
-  createRoles
+  validateRequest(validator.createMany),
+  createManyRolesController
 );
 
-// =========================
-// PATCH /roles/update/:id
-// - Update a role by ID
-// - Requires ADMIN role with UPDATE permission
-// =========================
 roleRoutes.patch(
   '/roles/update/:id',
   verifyRBAC({
@@ -99,14 +74,9 @@ roleRoutes.patch(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.update),
-  updateOneRole
+  updateOneRoleController
 );
 
-// =========================
-// DELETE /roles/delete/:id
-// - Hard delete a specific role by ID
-// - Requires ADMIN role with DELETE permission
-// =========================
 roleRoutes.delete(
   '/roles/delete/:id',
   verifyRBAC({
@@ -116,14 +86,9 @@ roleRoutes.delete(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.delete),
-  deleteOneRole
+  deleteOneRoleController
 );
 
-// =========================
-// POST /roles/delete-multi
-// - Hard delete multiple roles
-// - Requires ADMIN role with DELETE permission
-// =========================
 roleRoutes.post(
   '/roles/delete-multi',
   verifyRBAC({
@@ -132,15 +97,10 @@ roleRoutes.post(
     module: MODULES.USER_MANAGEMENT,
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
-  validateRequest(validator.deleteMulti),
-  deleteRoles
+  validateRequest(validator.deleteMany),
+  deleteManyRolesController
 );
 
-// =========================
-// DELETE /roles/soft-delete/:id
-// - Soft delete a specific role by ID
-// - Requires ADMIN role with DELETE permission
-// =========================
 roleRoutes.delete(
   '/roles/soft-delete/:id',
   verifyRBAC({
@@ -150,14 +110,9 @@ roleRoutes.delete(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.delete),
-  softDeleteOneRole
+  softDeleteOneRoleController
 );
 
-// =========================
-// POST /roles/soft-delete-multi
-// - Soft delete multiple roles
-// - Requires ADMIN role with DELETE permission
-// =========================
 roleRoutes.post(
   '/roles/soft-delete-multi',
   verifyRBAC({
@@ -166,8 +121,8 @@ roleRoutes.post(
     module: MODULES.USER_MANAGEMENT,
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
-  validateRequest(validator.deleteMulti),
-  softDeleteRoles
+  validateRequest(validator.deleteMany),
+  softDeleteManyRolesController
 );
 
 export default roleRoutes;

@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import {
-  createChannels,
-  createOneChannel,
-  deleteChannels,
-  deleteOneChannel,
-  getAllChannels,
-  getOneChannel,
-  softDeleteChannels,
-  softDeleteOneChannel,
-  updateOneChannel,
+  createManyChannelsController,
+  createOneChannelController,
+  deleteManyChannelsController,
+  deleteOneChannelController,
+  getAllChannelsController,
+  getOneChannelController,
+  softDeleteManyChannelsController,
+  softDeleteOneChannelController,
+  updateOneChannelController,
 } from './channel.controller';
 import { validateRequest } from '../../../middlewares/validation';
 import validator from './channel.validator';
@@ -17,11 +17,6 @@ import { ACTIONS, MODULES, ROLES, SUB_MODULES } from '../../../configs/rbac';
 
 const channelRoutes = Router();
 
-// =========================
-// GET /channels
-// - Get all channels
-// - Requires ADMIN role with VIEW permission
-// =========================
 channelRoutes.get(
   '/channels',
   verifyRBAC({
@@ -31,14 +26,9 @@ channelRoutes.get(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.select),
-  getAllChannels
+  getAllChannelsController
 );
 
-// =========================
-// GET /channels/:id
-// - Get a specific channel by ID
-// - Requires ADMIN role with VIEW permission
-// =========================
 channelRoutes.get(
   '/channels/:id',
   verifyRBAC({
@@ -48,14 +38,9 @@ channelRoutes.get(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.detail),
-  getOneChannel
+  getOneChannelController
 );
 
-// =========================
-// POST /channels/create
-// - Create a single channel
-// - Requires ADMIN role with CREATE permission
-// =========================
 channelRoutes.post(
   '/channels/create',
   verifyRBAC({
@@ -65,14 +50,9 @@ channelRoutes.post(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.create),
-  createOneChannel
+  createOneChannelController
 );
 
-// =========================
-// POST /channels/create-multi
-// - Create multiple channels
-// - Requires ADMIN role with CREATE permission
-// =========================
 channelRoutes.post(
   '/channels/create-multi',
   verifyRBAC({
@@ -81,15 +61,10 @@ channelRoutes.post(
     module: MODULES.USER_MANAGEMENT,
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
-  validateRequest(validator.createMulti),
-  createChannels
+  validateRequest(validator.createMany),
+  createManyChannelsController
 );
 
-// =========================
-// PATCH /channels/update/:id
-// - Update a channel by ID
-// - Requires ADMIN role with UPDATE permission
-// =========================
 channelRoutes.patch(
   '/channels/update/:id',
   verifyRBAC({
@@ -99,14 +74,9 @@ channelRoutes.patch(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.update),
-  updateOneChannel
+  updateOneChannelController
 );
 
-// =========================
-// DELETE /channels/delete/:id
-// - Hard delete a specific channel by ID
-// - Requires ADMIN role with DELETE permission
-// =========================
 channelRoutes.delete(
   '/channels/delete/:id',
   verifyRBAC({
@@ -116,14 +86,9 @@ channelRoutes.delete(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.delete),
-  deleteOneChannel
+  deleteOneChannelController
 );
 
-// =========================
-// POST /channels/delete-multi
-// - Hard delete multiple channels
-// - Requires ADMIN role with DELETE permission
-// =========================
 channelRoutes.post(
   '/channels/delete-multi',
   verifyRBAC({
@@ -132,15 +97,10 @@ channelRoutes.post(
     module: MODULES.USER_MANAGEMENT,
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
-  validateRequest(validator.deleteMulti),
-  deleteChannels
+  validateRequest(validator.deleteMany),
+  deleteManyChannelsController
 );
 
-// =========================
-// DELETE /channels/soft-delete/:id
-// - Soft delete a specific channel by ID
-// - Requires ADMIN role with DELETE permission
-// =========================
 channelRoutes.delete(
   '/channels/soft-delete/:id',
   verifyRBAC({
@@ -150,14 +110,9 @@ channelRoutes.delete(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.delete),
-  softDeleteOneChannel
+  softDeleteOneChannelController
 );
 
-// =========================
-// POST /channels/soft-delete-multi
-// - Soft delete multiple channels
-// - Requires ADMIN role with DELETE permission
-// =========================
 channelRoutes.post(
   '/channels/soft-delete-multi',
   verifyRBAC({
@@ -166,8 +121,8 @@ channelRoutes.post(
     module: MODULES.USER_MANAGEMENT,
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
-  validateRequest(validator.deleteMulti),
-  softDeleteChannels
+  validateRequest(validator.deleteMany),
+  softDeleteManyChannelsController
 );
 
 export default channelRoutes;

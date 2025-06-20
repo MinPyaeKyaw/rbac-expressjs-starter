@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import {
-  getAllPermissions,
-  getAllRoleOnChannels,
-  updatePermissionsByRole,
+  getAllPermissionsController,
+  getAllRoleOnChannelsController,
+  updatePermissionsByRoleController,
 } from './permission.controller';
 import { validateRequest } from '../../../middlewares/validation';
 import validator from './permission.validator';
@@ -11,11 +11,6 @@ import { ACTIONS, MODULES, ROLES, SUB_MODULES } from '../../../configs/rbac';
 
 const permissionRoutes = Router();
 
-// =========================
-// GET /role-channel-list
-// - Get all roles that assigned to different channels
-// - Requires ADMIN role with VIEW permission
-// =========================
 permissionRoutes.get(
   '/role-channel-list',
   verifyRBAC({
@@ -25,14 +20,9 @@ permissionRoutes.get(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.select),
-  getAllRoleOnChannels
+  getAllRoleOnChannelsController
 );
 
-// =========================
-// GET /permissions
-// - Get all permissions
-// - Requires ADMIN role with VIEW permission
-// =========================
 permissionRoutes.get(
   '/permissions',
   verifyRBAC({
@@ -42,14 +32,9 @@ permissionRoutes.get(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.select),
-  getAllPermissions
+  getAllPermissionsController
 );
 
-// =========================
-// PATCH /permissions
-// - Update permissions by role
-// - Requires ADMIN role with UPDATE permission
-// =========================
 permissionRoutes.patch(
   '/permissions',
   verifyRBAC({
@@ -59,7 +44,7 @@ permissionRoutes.patch(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.update),
-  updatePermissionsByRole
+  updatePermissionsByRoleController
 );
 
 export default permissionRoutes;

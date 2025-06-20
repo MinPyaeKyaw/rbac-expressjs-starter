@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import {
-  createModules,
-  createOneModule,
-  deleteModules,
-  deleteOneModule,
-  getAllModules,
-  getAllModulesWithPermissions,
-  getOneModule,
-  softDeleteModules,
-  softDeleteOneModule,
-  updateOneModule,
+  createManyModulesController,
+  createOneModuleController,
+  deleteManyModulesController,
+  deleteOneModuleController,
+  getAllModulesController,
+  getAllModulesWithPermissionsController,
+  getOneModuleController,
+  softDeleteManyModulesController,
+  softDeleteOneModuleController,
+  updateOneModuleController,
 } from './module.controller';
 import { validateRequest } from '../../../middlewares/validation';
 import validator from './module.validator';
@@ -18,12 +18,6 @@ import { ACTIONS, MODULES, ROLES, SUB_MODULES } from '../../../configs/rbac';
 
 const moduleRoutes = Router();
 
-// =========================
-// GET /modules-with-permissions
-// - Get all modules with it's sub modules and permissions
-//   based on role and channel from query
-// - Requires ADMIN role with VIEW permission
-// =========================
 moduleRoutes.get(
   '/modules-with-permissions',
   verifyRBAC({
@@ -33,14 +27,9 @@ moduleRoutes.get(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.moduleWithPermissionSelect),
-  getAllModulesWithPermissions
+  getAllModulesWithPermissionsController
 );
 
-// =========================
-// GET /modules
-// - Get all modules
-// - Requires ADMIN role with VIEW permission
-// =========================
 moduleRoutes.get(
   '/modules',
   verifyRBAC({
@@ -50,14 +39,9 @@ moduleRoutes.get(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.select),
-  getAllModules
+  getAllModulesController
 );
 
-// =========================
-// GET /modules/:id
-// - Get a specific module by ID
-// - Requires ADMIN role with VIEW permission
-// =========================
 moduleRoutes.get(
   '/modules/:id',
   verifyRBAC({
@@ -67,14 +51,9 @@ moduleRoutes.get(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.detail),
-  getOneModule
+  getOneModuleController
 );
 
-// =========================
-// POST /modules/create
-// - Create a single module
-// - Requires ADMIN role with CREATE permission
-// =========================
 moduleRoutes.post(
   '/modules/create',
   verifyRBAC({
@@ -84,14 +63,9 @@ moduleRoutes.post(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.create),
-  createOneModule
+  createOneModuleController
 );
 
-// =========================
-// POST /modules/create-multi
-// - Create multiple modules
-// - Requires ADMIN role with CREATE permission
-// =========================
 moduleRoutes.post(
   '/modules/create-multi',
   verifyRBAC({
@@ -100,15 +74,10 @@ moduleRoutes.post(
     module: MODULES.USER_MANAGEMENT,
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
-  validateRequest(validator.createMulti),
-  createModules
+  validateRequest(validator.createMany),
+  createManyModulesController
 );
 
-// =========================
-// PATCH /modules/update/:id
-// - Update a module by ID
-// - Requires ADMIN role with UPDATE permission
-// =========================
 moduleRoutes.patch(
   '/modules/update/:id',
   verifyRBAC({
@@ -118,14 +87,9 @@ moduleRoutes.patch(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.update),
-  updateOneModule
+  updateOneModuleController
 );
 
-// =========================
-// DELETE /modules/delete/:id
-// - Hard delete a specific module by ID
-// - Requires ADMIN role with DELETE permission
-// =========================
 moduleRoutes.delete(
   '/modules/delete/:id',
   verifyRBAC({
@@ -135,14 +99,9 @@ moduleRoutes.delete(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.delete),
-  deleteOneModule
+  deleteOneModuleController
 );
 
-// =========================
-// POST /modules/delete-multi
-// - Hard delete multiple modules
-// - Requires ADMIN role with DELETE permission
-// =========================
 moduleRoutes.post(
   '/modules/delete-multi',
   verifyRBAC({
@@ -151,15 +110,10 @@ moduleRoutes.post(
     module: MODULES.USER_MANAGEMENT,
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
-  validateRequest(validator.deleteMulti),
-  deleteModules
+  validateRequest(validator.deleteMany),
+  deleteManyModulesController
 );
 
-// =========================
-// DELETE /modules/soft-delete/:id
-// - Soft delete a specific module by ID
-// - Requires ADMIN role with DELETE permission
-// =========================
 moduleRoutes.delete(
   '/modules/soft-delete/:id',
   verifyRBAC({
@@ -169,14 +123,9 @@ moduleRoutes.delete(
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
   validateRequest(validator.delete),
-  softDeleteOneModule
+  softDeleteOneModuleController
 );
 
-// =========================
-// POST /modules/soft-delete-multi
-// - Soft delete multiple modules
-// - Requires ADMIN role with DELETE permission
-// =========================
 moduleRoutes.post(
   '/modules/soft-delete-multi',
   verifyRBAC({
@@ -185,8 +134,8 @@ moduleRoutes.post(
     module: MODULES.USER_MANAGEMENT,
     subModule: SUB_MODULES.USER_ROLE_ASSIGN,
   }),
-  validateRequest(validator.deleteMulti),
-  softDeleteModules
+  validateRequest(validator.deleteMany),
+  softDeleteManyModulesController
 );
 
 export default moduleRoutes;

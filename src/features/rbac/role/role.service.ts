@@ -3,7 +3,7 @@ import db from '../../../db/db';
 import { getPaginatedData, getPagination } from '../../../utils/common';
 import { ListQuery } from '../../../types/types';
 
-export async function getRoles(filters: ListQuery) {
+export async function getAllRolesService(filters: ListQuery) {
   const pagination = getPagination({
     page: filters.page as number,
     size: filters.size as number,
@@ -31,7 +31,7 @@ export async function getRoles(filters: ListQuery) {
   return getPaginatedData(query, totalCountQuery, filters, pagination);
 }
 
-export async function getRole(id: string | number) {
+export async function getOneRoleService(id: string | number) {
   const role = await db
     .table('role')
     .select('id', 'name', 'is_deleted')
@@ -39,7 +39,7 @@ export async function getRole(id: string | number) {
   return role[0] || null;
 }
 
-export async function createRole(
+export async function createOneRoleService(
   data: Record<string, unknown>,
   trx?: Knex.Transaction
 ) {
@@ -50,7 +50,7 @@ export async function createRole(
   return data;
 }
 
-export async function createMultiRoles(
+export async function createManyRolesService(
   data: Record<string, unknown>[],
   trx?: Knex.Transaction
 ) {
@@ -61,7 +61,7 @@ export async function createMultiRoles(
   return query;
 }
 
-export async function updateRole(
+export async function updateOneRoleService(
   {
     id,
     data,
@@ -78,7 +78,10 @@ export async function updateRole(
   return query;
 }
 
-export async function deleteRole(id: string | number, trx?: Knex.Transaction) {
+export async function deleteOneRoleService(
+  id: string | number,
+  trx?: Knex.Transaction
+) {
   const toDelete = await db.table('role').select('*').where('id', id);
 
   const query = db.table('role').where('id', id).del();
@@ -88,7 +91,10 @@ export async function deleteRole(id: string | number, trx?: Knex.Transaction) {
   return toDelete[0] || null;
 }
 
-export async function deleteMultiRoles(ids: string[], trx?: Knex.Transaction) {
+export async function deleteManyRolesService(
+  ids: string[],
+  trx?: Knex.Transaction
+) {
   const toDelete = await db.table('role').select('*').whereIn('id', ids);
 
   const query = db.table('role').whereIn('id', ids).del();
@@ -98,7 +104,7 @@ export async function deleteMultiRoles(ids: string[], trx?: Knex.Transaction) {
   return toDelete || null;
 }
 
-export async function softDeleteRole(
+export async function softDeleteOneRoleService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -111,7 +117,7 @@ export async function softDeleteRole(
   return toDelete[0] || null;
 }
 
-export async function softDeleteMultiRoles(
+export async function softDeleteManyRolesService(
   ids: string[] | number[],
   trx?: Knex.Transaction
 ) {
@@ -127,7 +133,7 @@ export async function softDeleteMultiRoles(
   return toDelete || null;
 }
 
-export async function getExistingRole(data: Record<string, unknown>) {
+export async function getExistingRoleService(data: Record<string, unknown>) {
   const role = await db
     .table('role')
     .select('id', 'name', 'is_deleted')

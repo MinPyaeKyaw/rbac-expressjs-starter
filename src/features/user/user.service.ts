@@ -4,7 +4,7 @@ import db from '../../db/db';
 import { getPaginatedData, getPagination } from '../../utils/common';
 import { ListQuery } from '../../types/types';
 
-export async function getUsers(filters: ListQuery) {
+export async function getAllUsersService(filters: ListQuery) {
   const pagination = getPagination({
     page: filters.page as number,
     size: filters.size as number,
@@ -31,7 +31,7 @@ export async function getUsers(filters: ListQuery) {
   return getPaginatedData(query, totalCountQuery, filters, pagination);
 }
 
-export async function getUser(id: string | number) {
+export async function getOneUserService(id: string | number) {
   const user = await db
     .table('user')
     .select('id', 'name', 'is_deleted')
@@ -39,7 +39,7 @@ export async function getUser(id: string | number) {
   return user[0] || null;
 }
 
-export async function createUser(
+export async function createOneUserService(
   data: Record<string, unknown>,
   trx?: Knex.Transaction
 ) {
@@ -50,7 +50,7 @@ export async function createUser(
   return data;
 }
 
-export async function updateUser(
+export async function updateOneUserService(
   {
     id,
     data,
@@ -67,7 +67,10 @@ export async function updateUser(
   return query;
 }
 
-export async function deleteUser(id: string | number, trx?: Knex.Transaction) {
+export async function deleteOneUserService(
+  id: string | number,
+  trx?: Knex.Transaction
+) {
   const toDelete = await db.table('user').where('id', id);
 
   const query = db.table('user').where('id', id).del();
@@ -77,7 +80,7 @@ export async function deleteUser(id: string | number, trx?: Knex.Transaction) {
   return toDelete[0] || null;
 }
 
-export async function getExistingUser(data: Record<string, unknown>) {
+export async function getExistingUserService(data: Record<string, unknown>) {
   const user = await db
     .table('user')
     .select('id', 'name', 'is_deleted')
@@ -85,7 +88,7 @@ export async function getExistingUser(data: Record<string, unknown>) {
   return user[0] || null;
 }
 
-export const hashPassword = async (password: string) => {
+export const hashPasswordService = async (password: string) => {
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   return hashedPassword;

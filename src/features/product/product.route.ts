@@ -2,26 +2,21 @@ import { Router } from 'express';
 import validator from './product.validator';
 import { validateRequest } from '../../middlewares/validation';
 import {
-  createOneProduct,
-  createProducts,
-  deleteOneProduct,
-  deleteProducts,
-  getAllProducts,
-  getOneProduct,
-  softDeleteOneProduct,
-  softDeleteProducts,
-  updateOneProduct,
+  createManyProductsController,
+  createOneProductController,
+  deleteManyProductsController,
+  deleteOneProductController,
+  getAllProductsController,
+  getOneProductController,
+  softDeleteManyProductsController,
+  softDeleteOneProductController,
+  updateOneProductController,
 } from './product.controller';
 import verifyRBAC from '../../middlewares/rbac';
 import { ACTIONS, MODULES, ROLES, SUB_MODULES } from '../../configs/rbac';
 
 const productRoutes = Router();
 
-// =========================
-// GET /products
-// - Get all products
-// - Requires ADMIN role with VIEW permission on PRODUCT module
-// =========================
 productRoutes.get(
   '/products',
   verifyRBAC({
@@ -31,14 +26,9 @@ productRoutes.get(
     subModule: SUB_MODULES.PRODUCT,
   }),
   validateRequest(validator.select),
-  getAllProducts
+  getAllProductsController
 );
 
-// =========================
-// GET /products/:id
-// - Get a single product by ID
-// - Requires ADMIN role with VIEW permission
-// =========================
 productRoutes.get(
   '/products/:id',
   verifyRBAC({
@@ -48,14 +38,9 @@ productRoutes.get(
     subModule: SUB_MODULES.PRODUCT,
   }),
   validateRequest(validator.detail),
-  getOneProduct
+  getOneProductController
 );
 
-// =========================
-// POST /products
-// - Create a new product
-// - Requires ADMIN role with CREATE permission
-// =========================
 productRoutes.post(
   '/products',
   verifyRBAC({
@@ -65,31 +50,21 @@ productRoutes.post(
     subModule: SUB_MODULES.PRODUCT,
   }),
   validateRequest(validator.create),
-  createOneProduct
+  createOneProductController
 );
 
-// =========================
-// POST /products/create-multi
-// - Create multiple products in bulk
-// - Requires ADMIN role with CREATE permission
-// =========================
 productRoutes.post(
-  '/products/create-multi',
+  '/products/create-many',
   verifyRBAC({
     action: ACTIONS.CREATE,
     roles: [ROLES.ADMIN],
     module: MODULES.PRODUCT,
     subModule: SUB_MODULES.PRODUCT,
   }),
-  validateRequest(validator.createMulti),
-  createProducts
+  validateRequest(validator.createMany),
+  createManyProductsController
 );
 
-// =========================
-// PATCH /products/:id
-// - Update a product by ID
-// - Requires ADMIN role with UPDATE permission
-// =========================
 productRoutes.patch(
   '/products/:id',
   verifyRBAC({
@@ -99,14 +74,9 @@ productRoutes.patch(
     subModule: SUB_MODULES.PRODUCT,
   }),
   validateRequest(validator.update),
-  updateOneProduct
+  updateOneProductController
 );
 
-// =========================
-// DELETE /products/:id
-// - Hard delete a product by ID
-// - Requires ADMIN role with DELETE permission
-// =========================
 productRoutes.delete(
   '/products/:id',
   verifyRBAC({
@@ -116,31 +86,21 @@ productRoutes.delete(
     subModule: SUB_MODULES.PRODUCT,
   }),
   validateRequest(validator.delete),
-  deleteOneProduct
+  deleteOneProductController
 );
 
-// =========================
-// POST /products/delete-multi
-// - Hard delete multiple products
-// - Requires ADMIN role with DELETE permission
-// =========================
 productRoutes.post(
-  '/products/delete-multi',
+  '/products/delete-many',
   verifyRBAC({
     action: ACTIONS.DELETE,
     roles: [ROLES.ADMIN],
     module: MODULES.PRODUCT,
     subModule: SUB_MODULES.PRODUCT,
   }),
-  validateRequest(validator.deleteMulti),
-  deleteProducts
+  validateRequest(validator.deleteMany),
+  deleteManyProductsController
 );
 
-// =========================
-// DELETE /products/soft-delete/:id
-// - Soft delete a product by ID (mark as inactive instead of removing)
-// - Requires ADMIN role with DELETE permission
-// =========================
 productRoutes.delete(
   '/products/soft-delete/:id',
   verifyRBAC({
@@ -150,24 +110,19 @@ productRoutes.delete(
     subModule: SUB_MODULES.PRODUCT,
   }),
   validateRequest(validator.delete),
-  softDeleteOneProduct
+  softDeleteOneProductController
 );
 
-// =========================
-// POST /products/soft-delete-multi
-// - Soft delete multiple products
-// - Requires ADMIN role with DELETE permission
-// =========================
 productRoutes.post(
-  '/products/soft-delete-multi',
+  '/products/soft-delete-many',
   verifyRBAC({
     action: ACTIONS.DELETE,
     roles: [ROLES.ADMIN],
     module: MODULES.PRODUCT,
     subModule: SUB_MODULES.PRODUCT,
   }),
-  validateRequest(validator.deleteMulti),
-  softDeleteProducts
+  validateRequest(validator.deleteMany),
+  softDeleteManyProductsController
 );
 
 export default productRoutes;

@@ -2,23 +2,17 @@ import { Router } from 'express';
 import validator from './user.validator';
 import { validateRequest } from '../../middlewares/validation';
 import {
-  createOneUser,
-  deleteOneUser,
-  getAllUsers,
-  getOneUser,
-  updateOneUser,
+  createOneUserController,
+  deleteOneUserController,
+  getAllUsersController,
+  getOneUserController,
+  updateOneUserController,
 } from './user.controller';
 import verifyRBAC from '../../middlewares/rbac';
 import { ACTIONS, MODULES, ROLES, SUB_MODULES } from '../../configs/rbac';
-import { upload } from '../../middlewares/multer-upload';
 
 const userRoutes = Router();
 
-// =========================
-// GET /users
-// - Get all users
-// - Requires ADMIN role with VIEW permission
-// =========================
 userRoutes.get(
   '/users',
   verifyRBAC({
@@ -28,14 +22,9 @@ userRoutes.get(
     subModule: SUB_MODULES.USER,
   }),
   validateRequest(validator.select),
-  getAllUsers
+  getAllUsersController
 );
 
-// =========================
-// GET /users/:id
-// - Get a user by ID
-// - Requires ADMIN role with VIEW permission
-// =========================
 userRoutes.get(
   '/users/:id',
   verifyRBAC({
@@ -45,15 +34,9 @@ userRoutes.get(
     subModule: SUB_MODULES.USER,
   }),
   validateRequest(validator.detail),
-  getOneUser
+  getOneUserController
 );
 
-// =========================
-// POST /users
-// - Create a new user
-// - Requires ADMIN role with CREATE permission
-// - Accepts single file upload (e.g., profile picture)
-// =========================
 userRoutes.post(
   '/users',
   verifyRBAC({
@@ -63,20 +46,9 @@ userRoutes.post(
     subModule: SUB_MODULES.USER,
   }),
   validateRequest(validator.create),
-  (req, res, next) => {
-    console.log('req.body', req.body);
-    console.log('req.file', req.file);
-    next();
-  },
-  // upload.single('file'),
-  createOneUser
+  createOneUserController
 );
 
-// =========================
-// PATCH /users/:id
-// - Update a user by ID
-// - Requires ADMIN role with UPDATE permission
-// =========================
 userRoutes.patch(
   '/users/:id',
   verifyRBAC({
@@ -86,14 +58,9 @@ userRoutes.patch(
     subModule: SUB_MODULES.USER,
   }),
   validateRequest(validator.update),
-  updateOneUser
+  updateOneUserController
 );
 
-// =========================
-// DELETE /users/:id
-// - Delete a user by ID
-// - Requires ADMIN role with DELETE permission
-// =========================
 userRoutes.delete(
   '/users/:id',
   verifyRBAC({
@@ -103,7 +70,7 @@ userRoutes.delete(
     subModule: SUB_MODULES.USER,
   }),
   validateRequest(validator.delete),
-  deleteOneUser
+  deleteOneUserController
 );
 
 export default userRoutes;

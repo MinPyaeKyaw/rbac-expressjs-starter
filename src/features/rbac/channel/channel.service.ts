@@ -3,7 +3,7 @@ import db from '../../../db/db';
 import { getPaginatedData, getPagination } from '../../../utils/common';
 import { ListQuery } from '../../../types/types';
 
-export async function getChannels(filters: ListQuery) {
+export async function getAllChannelsService(filters: ListQuery) {
   const pagination = getPagination({
     page: filters.page as number,
     size: filters.size as number,
@@ -31,7 +31,7 @@ export async function getChannels(filters: ListQuery) {
   return getPaginatedData(query, totalCountQuery, filters, pagination);
 }
 
-export async function getChannel(id: string | number) {
+export async function getOneChannelService(id: string | number) {
   const channel = await db
     .table('channel')
     .select('id', 'name', 'is_deleted')
@@ -39,7 +39,7 @@ export async function getChannel(id: string | number) {
   return channel[0] || null;
 }
 
-export async function createChannel(
+export async function createOneChannelService(
   data: Record<string, unknown>,
   trx?: Knex.Transaction
 ) {
@@ -50,7 +50,7 @@ export async function createChannel(
   return data;
 }
 
-export async function createMultiChannels(
+export async function createManyChannelsService(
   data: Record<string, unknown>[],
   trx?: Knex.Transaction
 ) {
@@ -61,7 +61,7 @@ export async function createMultiChannels(
   return data;
 }
 
-export async function updateChannel(
+export async function updateOneChannelService(
   {
     id,
     data,
@@ -78,7 +78,7 @@ export async function updateChannel(
   return query;
 }
 
-export async function deleteChannel(
+export async function deleteOneChannelService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -91,7 +91,7 @@ export async function deleteChannel(
   return toDelete[0] || null;
 }
 
-export async function deleteMultiChannels(
+export async function deleteManyChannelsService(
   ids: string[],
   trx?: Knex.Transaction
 ) {
@@ -104,7 +104,7 @@ export async function deleteMultiChannels(
   return toDelete || null;
 }
 
-export async function softDeleteChannel(
+export async function softDeleteOneChannelService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -120,7 +120,7 @@ export async function softDeleteChannel(
   return toDelete[0] || null;
 }
 
-export async function softDeleteMultiChannels(
+export async function softDeleteManyChannelsService(
   ids: string[] | number[],
   trx?: Knex.Transaction
 ) {
@@ -136,7 +136,7 @@ export async function softDeleteMultiChannels(
   return toDelete || null;
 }
 
-export async function getExistingChannel(data: Record<string, unknown>) {
+export async function getExistingChannelService(data: Record<string, unknown>) {
   const channel = await db
     .table('channel')
     .select('id', 'name', 'is_deleted')

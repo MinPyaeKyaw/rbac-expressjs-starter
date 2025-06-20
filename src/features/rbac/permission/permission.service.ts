@@ -3,7 +3,7 @@ import db from '../../../db/db';
 import { getPaginatedData, getPagination } from '../../../utils/common';
 import { ListQuery } from '../../../types/types';
 
-export async function getRolesOnChannelData(
+export async function getRolesOnChannelDataService(
   filters: ListQuery & { role_id?: string; channel_id?: string }
 ) {
   const pagination = getPagination({
@@ -36,7 +36,9 @@ export async function getRolesOnChannelData(
   return getPaginatedData(query, totalCountQuery, filters, pagination);
 }
 
-export async function getPermissions(filters: Record<string, unknown>) {
+export async function getAllPermissionsService(
+  filters: Record<string, unknown>
+) {
   const query = db
     .table('permission')
     .select(
@@ -79,7 +81,7 @@ export async function getPermissions(filters: Record<string, unknown>) {
   return query;
 }
 
-export async function getPermissionsByUser(userId: string) {
+export async function getPermissionsByUserService(userId: string) {
   const permissions = await db
     .table('permission')
     .select(
@@ -118,7 +120,7 @@ export async function getPermissionsByUser(userId: string) {
   return permissions;
 }
 
-export async function getPermission(id: string | number) {
+export async function getOnePermissionService(id: string | number) {
   const permission = await db
     .table('permission')
     .select('id', 'name', 'is_deleted')
@@ -126,7 +128,7 @@ export async function getPermission(id: string | number) {
   return permission[0] || null;
 }
 
-export async function createPermission(
+export async function createOnePermissionService(
   data: Record<string, unknown>,
   trx?: Knex.Transaction
 ) {
@@ -137,7 +139,7 @@ export async function createPermission(
   return query;
 }
 
-export async function createMultiPermissions(
+export async function createManyPermissionsService(
   data: Record<string, unknown>[],
   trx?: Knex.Transaction
 ) {
@@ -148,7 +150,7 @@ export async function createMultiPermissions(
   return query;
 }
 
-export async function updatePermission(
+export async function updateOnePermissionService(
   {
     id,
     data,
@@ -165,7 +167,7 @@ export async function updatePermission(
   return query;
 }
 
-export async function deletePermission(
+export async function deleteOnePermissionService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -176,7 +178,7 @@ export async function deletePermission(
   return query;
 }
 
-export async function deleteMultiPermissions(
+export async function deleteManyPermissionsService(
   conds: Record<string, unknown>,
   trx?: Knex.Transaction
 ) {
@@ -187,7 +189,9 @@ export async function deleteMultiPermissions(
   return query;
 }
 
-export async function getExistingPermission(data: Record<string, unknown>) {
+export async function getExistingPermissionService(
+  data: Record<string, unknown>
+) {
   const permission = await db
     .table('permission')
     .select('id', 'is_deleted')

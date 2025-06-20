@@ -2,23 +2,22 @@ import { NextFunction, Request, Response } from 'express';
 import { responseData } from '../../../utils/http';
 import { MESSAGES } from '../../../configs/messages';
 import {
-  getPermissionsByUser,
-  deleteMultiPermissions,
-  createMultiPermissions,
-  getPermissions,
-  getRolesOnChannelData,
+  getRolesOnChannelDataService,
+  getAllPermissionsService,
+  deleteManyPermissionsService,
+  createManyPermissionsService,
 } from './permission.service';
 import db from '../../../db/db';
 import { Knex } from 'knex';
 import { ListQuery } from '../../../types/types';
 
-export async function getAllRoleOnChannels(
+export async function getAllRoleOnChannelsController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const result = await getRolesOnChannelData(
+    const result = await getRolesOnChannelDataService(
       req.query as unknown as ListQuery
     );
 
@@ -33,13 +32,13 @@ export async function getAllRoleOnChannels(
   }
 }
 
-export async function getAllPermissions(
+export async function getAllPermissionsController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const result = await getPermissions(req.query);
+    const result = await getAllPermissionsService(req.query);
 
     responseData({
       res,
@@ -52,14 +51,14 @@ export async function getAllPermissions(
   }
 }
 
-export async function updatePermissionsByRole(
+export async function updatePermissionsByRoleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    await deleteMultiPermissions(
+    await deleteManyPermissionsService(
       { role_id: req.body.role_id, channel_id: req.body.channel_id },
       trx
     );
@@ -74,7 +73,7 @@ export async function updatePermissionsByRole(
           channel_id: permission.channel_id,
         }))
     );
-    await createMultiPermissions(preparedMultiCreatePayload, trx);
+    await createManyPermissionsService(preparedMultiCreatePayload, trx);
 
     await trx.commit();
 

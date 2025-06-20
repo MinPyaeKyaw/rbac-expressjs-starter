@@ -24,7 +24,7 @@ const validator = {
       module_id: Joi.string().required(),
     }),
   },
-  createMulti: {
+  createMany: {
     body: Joi.object({
       subModules: Joi.array().items(
         Joi.object({
@@ -50,7 +50,7 @@ const validator = {
       id: Joi.string().required(),
     }),
   },
-  deleteMulti: {
+  deleteMany: {
     body: Joi.object({
       ids: Joi.array().items(Joi.string().required()),
     }),

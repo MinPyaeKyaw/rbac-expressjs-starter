@@ -2,29 +2,28 @@ import { NextFunction, Request, Response } from 'express';
 import { AppError, responseData } from '../../../utils/http';
 import { MESSAGES } from '../../../configs/messages';
 import {
-  createSubModule,
-  deleteSubModule,
-  getSubModule,
-  getSubModules,
-  updateSubModule,
-  getExistingSubModule,
-  createMultiSubModules,
-  deleteMultiSubModules,
-  softDeleteSubModule,
-  softDeleteMultiSubModules,
+  getAllSubModulesService,
+  getOneSubModuleService,
+  getExistingSubModuleService,
+  createOneSubModuleService,
+  createManySubModulesService,
+  updateOneSubModuleService,
+  deleteManySubModulesService,
+  softDeleteOneSubModuleService,
+  softDeleteManySubModulesService,
 } from './sub-module.service';
 import db from '../../../db/db';
 import { Knex } from 'knex';
 import { ListQuery } from '../../../types/types';
 import { v4 as uuidv4 } from 'uuid';
 
-export async function getAllSubModules(
+export async function getAllSubModulesController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const result = await getSubModules(
+    const result = await getAllSubModulesService(
       req.query as unknown as ListQuery & {
         channel_id: string;
         module_id: string;
@@ -42,13 +41,13 @@ export async function getAllSubModules(
   }
 }
 
-export async function getOneSubModule(
+export async function getOneSubModuleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const product = await getSubModule(req.params.id);
+    const product = await getOneSubModuleService(req.params.id);
 
     responseData({
       res,
@@ -61,14 +60,14 @@ export async function getOneSubModule(
   }
 }
 
-export async function createOneSubModule(
+export async function createOneSubModuleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const existingSubModule = await getExistingSubModule({
+    const existingSubModule = await getExistingSubModuleService({
       name: req.body.name,
       channel_id: req.body.channel_id,
     });
@@ -82,7 +81,7 @@ export async function createOneSubModule(
       module_id: req.body.module_id,
       created_by: req.body.user.id,
     };
-    const createdSubModule = await createSubModule(payload, trx);
+    const createdSubModule = await createOneSubModuleService(payload, trx);
 
     await trx.commit();
 
@@ -98,7 +97,7 @@ export async function createOneSubModule(
   }
 }
 
-export async function createSubModules(
+export async function createManySubModulesController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -114,7 +113,7 @@ export async function createSubModules(
         created_by: req.body.user.id,
       })
     );
-    const createdModules = await createMultiSubModules(payload, trx);
+    const createdModules = await createManySubModulesService(payload, trx);
 
     await trx.commit();
 
@@ -130,7 +129,7 @@ export async function createSubModules(
   }
 }
 
-export async function updateOneSubModule(
+export async function updateOneSubModuleController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -142,7 +141,7 @@ export async function updateOneSubModule(
       channel_id: req.body.channel_id,
       updated_by: req.body.user.id,
     };
-    const updatedSubModule = await updateSubModule(
+    const updatedSubModule = await updateOneSubModuleService(
       {
         id: req.params.id,
         data: payload,
@@ -164,21 +163,21 @@ export async function updateOneSubModule(
   }
 }
 
-export async function deleteOneSubModule(
+export async function deleteOneSubModuleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const isExistedSubModule = await getExistingSubModule({
+    const isExistedSubModule = await getExistingSubModuleService({
       id: req.params.id,
     });
 
     if (!isExistedSubModule)
       throw new AppError(MESSAGES.ERROR.BAD_REQUEST, 400);
 
-    const deletedSubModule = await deleteSubModule(req.params.id);
+    const deletedSubModule = await getOneSubModuleService(req.params.id);
 
     await trx.commit();
 
@@ -194,14 +193,14 @@ export async function deleteOneSubModule(
   }
 }
 
-export async function deleteSubModules(
+export async function deleteManySubModulesController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const deletedModules = await deleteMultiSubModules(req.body.ids, trx);
+    const deletedModules = await deleteManySubModulesService(req.body.ids, trx);
 
     await trx.commit();
 
@@ -217,21 +216,21 @@ export async function deleteSubModules(
   }
 }
 
-export async function softDeleteOneSubModule(
+export async function softDeleteOneSubModuleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const isExistedSubModule = await getExistingSubModule({
+    const isExistedSubModule = await getExistingSubModuleService({
       id: req.params.id,
     });
 
     if (!isExistedSubModule)
       throw new AppError(MESSAGES.ERROR.BAD_REQUEST, 400);
 
-    const deletedSubModule = await softDeleteSubModule(req.params.id);
+    const deletedSubModule = await softDeleteOneSubModuleService(req.params.id);
 
     await trx.commit();
 
@@ -247,14 +246,17 @@ export async function softDeleteOneSubModule(
   }
 }
 
-export async function softDeleteSubModules(
+export async function softDeleteManySubModulesController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const deletedModules = await softDeleteMultiSubModules(req.body.ids, trx);
+    const deletedModules = await softDeleteManySubModulesService(
+      req.body.ids,
+      trx
+    );
 
     await trx.commit();
 

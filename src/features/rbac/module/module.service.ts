@@ -3,7 +3,7 @@ import db from '../../../db/db';
 import { getPaginatedData, getPagination } from '../../../utils/common';
 import { ListQuery } from '../../../types/types';
 
-export async function getModulesWithPermissions(
+export async function getModulesWithPermissionsService(
   filters?: Record<string, unknown>
 ) {
   if (!(filters?.role_id && filters?.channel_id)) return [];
@@ -77,7 +77,9 @@ export async function getModulesWithPermissions(
   return query;
 }
 
-export async function getModules(filters: ListQuery & { channel_id: string }) {
+export async function getAllModulesService(
+  filters: ListQuery & { channel_id: string }
+) {
   const pagination = getPagination({
     page: filters.page as number,
     size: filters.size as number,
@@ -123,7 +125,7 @@ export async function getModules(filters: ListQuery & { channel_id: string }) {
   return getPaginatedData(query, totalCountQuery, filters, pagination);
 }
 
-export async function getModule(id: string | number) {
+export async function getOneModuleService(id: string | number) {
   const module = await db
     .table('module')
     .select('id', 'name', 'is_deleted')
@@ -131,7 +133,7 @@ export async function getModule(id: string | number) {
   return module[0] || null;
 }
 
-export async function createModule(
+export async function createOneModuleService(
   data: Record<string, unknown>,
   trx?: Knex.Transaction
 ) {
@@ -142,7 +144,7 @@ export async function createModule(
   return data;
 }
 
-export async function createMultiModules(
+export async function createManyModulesService(
   data: Record<string, unknown>[],
   trx?: Knex.Transaction
 ) {
@@ -153,7 +155,7 @@ export async function createMultiModules(
   return data;
 }
 
-export async function updateModule(
+export async function updateOneModuleService(
   {
     id,
     data,
@@ -170,7 +172,7 @@ export async function updateModule(
   return query;
 }
 
-export async function deleteModule(
+export async function deleteOneModuleService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -183,7 +185,7 @@ export async function deleteModule(
   return toDelete[0] || null;
 }
 
-export async function deleteMultiModules(
+export async function deleteManyModulesService(
   ids: string[],
   trx?: Knex.Transaction
 ) {
@@ -196,7 +198,7 @@ export async function deleteMultiModules(
   return toDelete || null;
 }
 
-export async function softDeleteModule(
+export async function softDeleteOneModuleService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -209,7 +211,7 @@ export async function softDeleteModule(
   return toDelete[0] || null;
 }
 
-export async function softDeleteMultiModules(
+export async function softDeleteManyModulesService(
   ids: string[] | number[],
   trx?: Knex.Transaction
 ) {
@@ -225,7 +227,7 @@ export async function softDeleteMultiModules(
   return toDelete || null;
 }
 
-export async function getExistingModule(data: Record<string, unknown>) {
+export async function getExistingModuleService(data: Record<string, unknown>) {
   const module = await db
     .table('module')
     .select('id', 'name', 'is_deleted')

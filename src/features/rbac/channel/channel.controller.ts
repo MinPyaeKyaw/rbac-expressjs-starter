@@ -2,29 +2,31 @@ import { NextFunction, Request, Response } from 'express';
 import { AppError, responseData } from '../../../utils/http';
 import { MESSAGES } from '../../../configs/messages';
 import {
-  createChannel,
-  deleteChannel,
-  getChannel,
-  getChannels,
-  updateChannel,
-  getExistingChannel,
-  createMultiChannels,
-  deleteMultiChannels,
-  softDeleteChannel,
-  softDeleteMultiChannels,
+  getAllChannelsService,
+  getOneChannelService,
+  getExistingChannelService,
+  createOneChannelService,
+  createManyChannelsService,
+  updateOneChannelService,
+  deleteOneChannelService,
+  deleteManyChannelsService,
+  softDeleteOneChannelService,
+  softDeleteManyChannelsService,
 } from './channel.service';
 import db from '../../../db/db';
 import { Knex } from 'knex';
 import { ListQuery } from '../../../types/types';
 import { v4 as uuidv4 } from 'uuid';
 
-export async function getAllChannels(
+export async function getAllChannelsController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const result = await getChannels(req.query as unknown as ListQuery);
+    const result = await getAllChannelsService(
+      req.query as unknown as ListQuery
+    );
 
     responseData({
       res,
@@ -37,13 +39,13 @@ export async function getAllChannels(
   }
 }
 
-export async function getOneChannel(
+export async function getOneChannelController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const product = await getChannel(req.params.id);
+    const product = await getOneChannelService(req.params.id);
 
     responseData({
       res,
@@ -56,14 +58,14 @@ export async function getOneChannel(
   }
 }
 
-export async function createOneChannel(
+export async function createOneChannelController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const existingChannel = await getExistingChannel({
+    const existingChannel = await getExistingChannelService({
       name: req.body.name,
     });
     if (existingChannel)
@@ -74,7 +76,7 @@ export async function createOneChannel(
       name: req.body.name,
       created_by: req.body.user.id,
     };
-    const createdChannel = await createChannel(payload, trx);
+    const createdChannel = await createOneChannelService(payload, trx);
 
     await trx.commit();
 
@@ -90,7 +92,7 @@ export async function createOneChannel(
   }
 }
 
-export async function createChannels(
+export async function createManyChannelsController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -102,7 +104,7 @@ export async function createChannels(
       name: action.name,
       created_by: req.body.user.id,
     }));
-    await createMultiChannels(payload, trx);
+    await createManyChannelsService(payload, trx);
 
     await trx.commit();
 
@@ -118,7 +120,7 @@ export async function createChannels(
   }
 }
 
-export async function updateOneChannel(
+export async function updateOneChannelController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -129,7 +131,7 @@ export async function updateOneChannel(
       name: req.body.name,
       updated_by: req.body.user.id,
     };
-    const updatedChannel = await updateChannel(
+    const updatedChannel = await updateOneChannelService(
       {
         id: req.params.id,
         data: payload,
@@ -151,20 +153,20 @@ export async function updateOneChannel(
   }
 }
 
-export async function deleteOneChannel(
+export async function deleteOneChannelController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const isExistedChannel = await getExistingChannel({
+    const isExistedChannel = await getExistingChannelService({
       id: req.params.id,
     });
 
     if (!isExistedChannel) throw new AppError(MESSAGES.ERROR.BAD_REQUEST, 400);
 
-    const deletedChannel = await deleteChannel(req.params.id);
+    const deletedChannel = await deleteOneChannelService(req.params.id);
 
     await trx.commit();
 
@@ -180,14 +182,14 @@ export async function deleteOneChannel(
   }
 }
 
-export async function deleteChannels(
+export async function deleteManyChannelsController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    await deleteMultiChannels(req.body.ids, trx);
+    await deleteManyChannelsService(req.body.ids, trx);
 
     await trx.commit();
 
@@ -203,20 +205,20 @@ export async function deleteChannels(
   }
 }
 
-export async function softDeleteOneChannel(
+export async function softDeleteOneChannelController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const isExistedChannel = await getExistingChannel({
+    const isExistedChannel = await getExistingChannelService({
       id: req.params.id,
     });
 
     if (!isExistedChannel) throw new AppError(MESSAGES.ERROR.BAD_REQUEST, 400);
 
-    const deletedChannel = await softDeleteChannel(req.params.id);
+    const deletedChannel = await softDeleteOneChannelService(req.params.id);
 
     await trx.commit();
 
@@ -232,14 +234,14 @@ export async function softDeleteOneChannel(
   }
 }
 
-export async function softDeleteChannels(
+export async function softDeleteManyChannelsController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    await softDeleteMultiChannels(req.body.ids, trx);
+    await softDeleteManyChannelsService(req.body.ids, trx);
 
     await trx.commit();
 

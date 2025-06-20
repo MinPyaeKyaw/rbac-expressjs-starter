@@ -1,20 +1,24 @@
 import { NextFunction, Request, Response } from 'express';
 import {
-  getAccessToken,
-  getPermissionsByRole,
-  getRefreshToken,
-  getUser,
-  verifyPassword,
+  getAccessTokenService,
+  getPermissionsByRoleService,
+  getRefreshTokenService,
+  getUserService,
+  verifyPasswordService,
 } from './auth.service';
 import { AppError, responseData } from '../../utils/http';
 import { MESSAGES } from '../../configs/messages';
 
-export async function login(req: Request, res: Response, next: NextFunction) {
+export async function loginController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
-    const user = await getUser({ username: req.body.username });
+    const user = await getUserService({ username: req.body.username });
     if (!user) throw new AppError(MESSAGES.ERROR.USER_NOT_FOUND, 400);
 
-    const isCorrectPassword = await verifyPassword(
+    const isCorrectPassword = await verifyPasswordService(
       user.password,
       req.body.password
     );
@@ -22,9 +26,9 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       throw new AppError(MESSAGES.ERROR.INVALID_CREDENTIAL, 400);
     delete user.password;
 
-    const accessToken = await getAccessToken(user);
-    const refreshToken = await getRefreshToken({ id: user.id });
-    const userPermissions = await getPermissionsByRole(user.role_id);
+    const accessToken = await getAccessTokenService(user);
+    const refreshToken = await getRefreshTokenService({ id: user.id });
+    const userPermissions = await getPermissionsByRoleService(user.role_id);
 
     responseData({
       res,
@@ -42,17 +46,17 @@ export async function login(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export async function refreshToken(
+export async function refreshTokenController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const user = await getUser({ id: req.body.user.id });
+    const user = await getUserService({ id: req.body.user.id });
     if (!user) throw new AppError(MESSAGES.ERROR.USER_NOT_FOUND, 400);
 
-    const accessToken = await getAccessToken(user);
-    const refreshToken = await getRefreshToken({ id: user.id });
+    const accessToken = await getAccessTokenService(user);
+    const refreshToken = await getRefreshTokenService({ id: user.id });
 
     responseData({
       res,

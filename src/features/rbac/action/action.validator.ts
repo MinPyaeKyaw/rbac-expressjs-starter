@@ -20,7 +20,7 @@ const validator = {
       name: Joi.string().required(),
     }),
   },
-  createMulti: {
+  createMany: {
     body: Joi.object({
       actions: Joi.array().items(
         Joi.object({
@@ -42,7 +42,7 @@ const validator = {
       id: Joi.string().required(),
     }),
   },
-  deleteMulti: {
+  deleteMany: {
     body: Joi.object({
       ids: Joi.array().items(Joi.string().required()),
     }),

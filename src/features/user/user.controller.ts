@@ -2,25 +2,25 @@ import { NextFunction, Request, Response } from 'express';
 import { AppError, responseData } from '../../utils/http';
 import { MESSAGES } from '../../configs/messages';
 import {
-  createUser,
-  deleteUser,
-  getUser,
-  getUsers,
-  hashPassword,
-  updateUser,
+  createOneUserService,
+  deleteOneUserService,
+  getAllUsersService,
+  getOneUserService,
+  hashPasswordService,
+  updateOneUserService,
 } from './user.service';
 import db from '../../db/db';
 import { Knex } from 'knex';
 import { ListQuery } from '../../types/types';
 import { v4 as uuidv4 } from 'uuid';
 
-export async function getAllUsers(
+export async function getAllUsersController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const result = await getUsers(req.query as unknown as ListQuery);
+    const result = await getAllUsersService(req.query as unknown as ListQuery);
 
     responseData({
       res,
@@ -33,13 +33,13 @@ export async function getAllUsers(
   }
 }
 
-export async function getOneUser(
+export async function getOneUserController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const user = await getUser(req.params.id);
+    const user = await getOneUserService(req.params.id);
 
     responseData({
       res,
@@ -52,7 +52,7 @@ export async function getOneUser(
   }
 }
 
-export async function createOneUser(
+export async function createOneUserController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -63,7 +63,7 @@ export async function createOneUser(
       throw new AppError(`File is required!`, 400);
     }
 
-    const password = await hashPassword(req.body.password);
+    const password = await hashPasswordService(req.body.password);
     const payload = {
       id: uuidv4(),
       username: req.body.username,
@@ -79,7 +79,7 @@ export async function createOneUser(
       img: req.file.path,
       created_by: req.body.user.id,
     };
-    const createdUser = await createUser(payload, trx);
+    const createdUser = await createOneUserService(payload, trx);
 
     await trx.commit();
 
@@ -95,7 +95,7 @@ export async function createOneUser(
   }
 }
 
-export async function updateOneUser(
+export async function updateOneUserController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -107,7 +107,7 @@ export async function updateOneUser(
       price: req.body.price,
       updated_by: req.body.user.id,
     };
-    const updatedUser = await updateUser(
+    const updatedUser = await updateOneUserService(
       {
         id: req.params.id,
         data: payload,
@@ -129,14 +129,14 @@ export async function updateOneUser(
   }
 }
 
-export async function deleteOneUser(
+export async function deleteOneUserController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const deletedUser = await deleteUser(req.params.id);
+    const deletedUser = await deleteOneUserService(req.params.id);
 
     await trx.commit();
 

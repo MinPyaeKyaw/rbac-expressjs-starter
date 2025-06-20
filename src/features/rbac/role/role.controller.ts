@@ -2,29 +2,29 @@ import { NextFunction, Request, Response } from 'express';
 import { AppError, responseData } from '../../../utils/http';
 import { MESSAGES } from '../../../configs/messages';
 import {
-  createRole,
-  deleteRole,
-  getRole,
-  getRoles,
-  updateRole,
-  getExistingRole,
-  createMultiRoles,
-  deleteMultiRoles,
-  softDeleteRole,
-  softDeleteMultiRoles,
+  getAllRolesService,
+  getOneRoleService,
+  getExistingRoleService,
+  createOneRoleService,
+  createManyRolesService,
+  updateOneRoleService,
+  deleteOneRoleService,
+  deleteManyRolesService,
+  softDeleteOneRoleService,
+  softDeleteManyRolesService,
 } from './role.service';
 import db from '../../../db/db';
 import { Knex } from 'knex';
 import { ListQuery } from '../../../types/types';
 import { v4 as uuidv4 } from 'uuid';
 
-export async function getAllRoles(
+export async function getAllRolesController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const result = await getRoles(req.query as unknown as ListQuery);
+    const result = await getAllRolesService(req.query as unknown as ListQuery);
 
     responseData({
       res,
@@ -37,13 +37,13 @@ export async function getAllRoles(
   }
 }
 
-export async function getOneRole(
+export async function getOneRoleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const product = await getRole(req.params.id);
+    const product = await getOneRoleService(req.params.id);
 
     responseData({
       res,
@@ -56,14 +56,14 @@ export async function getOneRole(
   }
 }
 
-export async function createOneRole(
+export async function createOneRoleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const existingRole = await getExistingRole({
+    const existingRole = await getExistingRoleService({
       name: req.body.name,
     });
     if (existingRole)
@@ -74,7 +74,7 @@ export async function createOneRole(
       name: req.body.name,
       created_by: req.body.user.id,
     };
-    const createdRole = await createRole(payload, trx);
+    const createdRole = await createOneRoleService(payload, trx);
 
     await trx.commit();
 
@@ -90,7 +90,7 @@ export async function createOneRole(
   }
 }
 
-export async function createRoles(
+export async function createManyRolesController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -102,7 +102,7 @@ export async function createRoles(
       name: action.name,
       created_by: req.body.user.id,
     }));
-    await createMultiRoles(payload, trx);
+    await createManyRolesService(payload, trx);
 
     await trx.commit();
 
@@ -118,7 +118,7 @@ export async function createRoles(
   }
 }
 
-export async function updateOneRole(
+export async function updateOneRoleController(
   req: Request,
   res: Response,
   next: NextFunction
@@ -129,7 +129,7 @@ export async function updateOneRole(
       name: req.body.name,
       updated_by: req.body.user.id,
     };
-    const updatedRole = await updateRole(
+    const updatedRole = await updateOneRoleService(
       {
         id: req.params.id,
         data: payload,
@@ -151,20 +151,20 @@ export async function updateOneRole(
   }
 }
 
-export async function deleteOneRole(
+export async function deleteOneRoleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const isExistedRole = await getExistingRole({
+    const isExistedRole = await getExistingRoleService({
       id: req.params.id,
     });
 
     if (!isExistedRole) throw new AppError(MESSAGES.ERROR.BAD_REQUEST, 400);
 
-    const deletedRole = await deleteRole(req.params.id);
+    const deletedRole = await deleteOneRoleService(req.params.id);
 
     await trx.commit();
 
@@ -180,14 +180,14 @@ export async function deleteOneRole(
   }
 }
 
-export async function deleteRoles(
+export async function deleteManyRolesController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    await deleteMultiRoles(req.body.ids, trx);
+    await deleteManyRolesService(req.body.ids, trx);
 
     await trx.commit();
 
@@ -203,20 +203,20 @@ export async function deleteRoles(
   }
 }
 
-export async function softDeleteOneRole(
+export async function softDeleteOneRoleController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    const isExistedRole = await getExistingRole({
+    const isExistedRole = await getExistingRoleService({
       id: req.params.id,
     });
 
     if (!isExistedRole) throw new AppError(MESSAGES.ERROR.BAD_REQUEST, 400);
 
-    const deletedRole = await softDeleteRole(req.params.id);
+    const deletedRole = await softDeleteOneRoleService(req.params.id);
 
     await trx.commit();
 
@@ -232,14 +232,14 @@ export async function softDeleteOneRole(
   }
 }
 
-export async function softDeleteRoles(
+export async function softDeleteManyRolesController(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   const trx: Knex.Transaction = await db.transaction();
   try {
-    await softDeleteMultiRoles(req.body.ids, trx);
+    await softDeleteManyRolesService(req.body.ids, trx);
 
     await trx.commit();
 

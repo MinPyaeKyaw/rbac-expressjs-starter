@@ -3,7 +3,7 @@ import db from '../../../db/db';
 import { getPaginatedData, getPagination } from '../../../utils/common';
 import { ListQuery } from '../../../types/types';
 
-export async function getActions(filters: ListQuery) {
+export async function getAllActionsService(filters: ListQuery) {
   const pagination = getPagination({
     page: filters.page as number,
     size: filters.size as number,
@@ -31,7 +31,7 @@ export async function getActions(filters: ListQuery) {
   return getPaginatedData(query, totalCountQuery, filters, pagination);
 }
 
-export async function getAction(id: string | number) {
+export async function getOneActionService(id: string | number) {
   const action = await db
     .table('action')
     .select('id', 'name', 'is_deleted')
@@ -39,7 +39,7 @@ export async function getAction(id: string | number) {
   return action[0] || null;
 }
 
-export async function createAction(
+export async function createOneActionService(
   data: Record<string, unknown>,
   trx?: Knex.Transaction
 ) {
@@ -50,7 +50,7 @@ export async function createAction(
   return data;
 }
 
-export async function createMultiActions(
+export async function createManyActionsService(
   data: Record<string, unknown>[],
   trx?: Knex.Transaction
 ) {
@@ -61,7 +61,7 @@ export async function createMultiActions(
   return data;
 }
 
-export async function updateAction(
+export async function updateOneActionService(
   {
     id,
     data,
@@ -78,7 +78,7 @@ export async function updateAction(
   return query;
 }
 
-export async function deleteAction(
+export async function deleteOneActionService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -91,7 +91,7 @@ export async function deleteAction(
   return toDelete;
 }
 
-export async function deleteMultiActions(
+export async function deleteManyActionsService(
   ids: string[],
   trx?: Knex.Transaction
 ) {
@@ -104,7 +104,7 @@ export async function deleteMultiActions(
   return toDelete || null;
 }
 
-export async function softDeleteAction(
+export async function softDeleteOneActionService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -117,7 +117,7 @@ export async function softDeleteAction(
   return toDelete[0] || null;
 }
 
-export async function softDeleteMultiActions(
+export async function softDeleteManyActionsService(
   ids: string[] | number[],
   trx?: Knex.Transaction
 ) {
@@ -133,7 +133,7 @@ export async function softDeleteMultiActions(
   return toDelete || null;
 }
 
-export async function getExistingAction(data: Record<string, unknown>) {
+export async function getExistingActionService(data: Record<string, unknown>) {
   const action = await db
     .table('action')
     .select('id', 'name', 'is_deleted')

@@ -20,7 +20,7 @@ app.use(helmet());
 app.use(cors());
 
 // Middleware to handle file uploads using multer.
-app.use(upload.any());
+app.use(upload.single('file'));
 
 // Middleware to parse incoming JSON payloads
 app.use(express.json());

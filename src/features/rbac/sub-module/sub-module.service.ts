@@ -3,7 +3,7 @@ import db from '../../../db/db';
 import { getPaginatedData, getPagination } from '../../../utils/common';
 import { ListQuery } from '../../../types/types';
 
-export async function getSubModules(
+export async function getAllSubModulesService(
   filters: ListQuery & {
     channel_id: string;
     module_id: string;
@@ -56,7 +56,7 @@ export async function getSubModules(
   return getPaginatedData(query, totalCountQuery, filters, pagination);
 }
 
-export async function getSubModule(id: string | number) {
+export async function getOneSubModuleService(id: string | number) {
   const subModule = await db
     .table('sub_module')
     .select('id', 'name', 'is_deleted')
@@ -64,7 +64,7 @@ export async function getSubModule(id: string | number) {
   return subModule[0] || null;
 }
 
-export async function createSubModule(
+export async function createOneSubModuleService(
   data: Record<string, unknown>,
   trx?: Knex.Transaction
 ) {
@@ -75,7 +75,7 @@ export async function createSubModule(
   return data;
 }
 
-export async function createMultiSubModules(
+export async function createManySubModulesService(
   data: Record<string, unknown>[],
   trx?: Knex.Transaction
 ) {
@@ -86,7 +86,7 @@ export async function createMultiSubModules(
   return data;
 }
 
-export async function updateSubModule(
+export async function updateOneSubModuleService(
   {
     id,
     data,
@@ -103,7 +103,7 @@ export async function updateSubModule(
   return query;
 }
 
-export async function deleteSubModule(
+export async function deleteSubModuleService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -116,7 +116,7 @@ export async function deleteSubModule(
   return toDelete[0] || null;
 }
 
-export async function deleteMultiSubModules(
+export async function deleteManySubModulesService(
   ids: string[],
   trx?: Knex.Transaction
 ) {
@@ -129,7 +129,7 @@ export async function deleteMultiSubModules(
   return toDelete || null;
 }
 
-export async function softDeleteSubModule(
+export async function softDeleteOneSubModuleService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -145,7 +145,7 @@ export async function softDeleteSubModule(
   return toDelete[0] || null;
 }
 
-export async function softDeleteMultiSubModules(
+export async function softDeleteManySubModulesService(
   ids: string[] | number[],
   trx?: Knex.Transaction
 ) {
@@ -161,7 +161,9 @@ export async function softDeleteMultiSubModules(
   return toDelete || null;
 }
 
-export async function getExistingSubModule(data: Record<string, unknown>) {
+export async function getExistingSubModuleService(
+  data: Record<string, unknown>
+) {
   const subModule = await db
     .table('sub_module')
     .select('id', 'name', 'is_deleted')

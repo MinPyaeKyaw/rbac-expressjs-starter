@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export async function getUser(conds: Record<string, unknown>) {
+export async function getUserService(conds: Record<string, unknown>) {
   const user = await db
     .table('user')
     .select(
@@ -22,7 +22,7 @@ export async function getUser(conds: Record<string, unknown>) {
   return user[0] || null;
 }
 
-export async function getPermissionsByRole(roleId: string) {
+export async function getPermissionsByRoleService(roleId: string) {
   const permissions = await db
     .table('permission')
     .select(
@@ -60,13 +60,13 @@ export async function getPermissionsByRole(roleId: string) {
   return permissions;
 }
 
-export async function getAccessToken(payload: Record<string, unknown>) {
+export async function getAccessTokenService(payload: Record<string, unknown>) {
   return jwt.sign(payload, process.env.JWT_SECRET || 'smsk-jwt-secret', {
     expiresIn: process.env.JWT_EXPIRES_IN || '1h',
   } as jwt.SignOptions);
 }
 
-export async function getRefreshToken(payload: Record<string, unknown>) {
+export async function getRefreshTokenService(payload: Record<string, unknown>) {
   return jwt.sign(
     payload,
     process.env.REFRESH_JWT_SECRET || 'smsk-refresh-jwt-secret',
@@ -76,6 +76,9 @@ export async function getRefreshToken(payload: Record<string, unknown>) {
   );
 }
 
-export async function verifyPassword(hashedPassword: string, password: string) {
+export async function verifyPasswordService(
+  hashedPassword: string,
+  password: string
+) {
   return bcrypt.compare(password, hashedPassword);
 }

@@ -3,7 +3,7 @@ import db from '../../db/db';
 import { getPaginatedData, getPagination } from '../../utils/common';
 import { ListQuery } from '../../types/types';
 
-export async function getProducts(filters: ListQuery) {
+export async function getAllProductsService(filters: ListQuery) {
   const pagination = getPagination({
     page: filters.page as number,
     size: filters.size as number,
@@ -39,7 +39,7 @@ export async function getProducts(filters: ListQuery) {
   return getPaginatedData(query, totalCountQuery, filters, pagination);
 }
 
-export async function getProduct(id: string | number) {
+export async function getOneProductService(id: string | number) {
   const product = await db
     .table('product')
     .select('id', 'name', 'is_deleted')
@@ -47,7 +47,7 @@ export async function getProduct(id: string | number) {
   return product[0] || null;
 }
 
-export async function createProduct(
+export async function createOneProductService(
   data: Record<string, unknown>,
   trx?: Knex.Transaction
 ) {
@@ -58,7 +58,7 @@ export async function createProduct(
   return data;
 }
 
-export async function createMultiProducts(
+export async function createManyProductsService(
   data: Record<string, unknown>[],
   trx?: Knex.Transaction
 ) {
@@ -69,7 +69,7 @@ export async function createMultiProducts(
   return data;
 }
 
-export async function updateProduct(
+export async function updateOneProductService(
   {
     id,
     data,
@@ -86,7 +86,7 @@ export async function updateProduct(
   return query;
 }
 
-export async function deleteProduct(
+export async function deleteOneProductService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -99,7 +99,7 @@ export async function deleteProduct(
   return toDelete[0] || null;
 }
 
-export async function deleteMultiProducts(
+export async function deleteManyProductsService(
   ids: string[],
   trx?: Knex.Transaction
 ) {
@@ -112,7 +112,7 @@ export async function deleteMultiProducts(
   return toDelete;
 }
 
-export async function softDeleteProduct(
+export async function softDeleteOneProductService(
   id: string | number,
   trx?: Knex.Transaction
 ) {
@@ -129,7 +129,7 @@ export async function softDeleteProduct(
   return toDelete[0] || null;
 }
 
-export async function softDeleteMultiProducts(
+export async function softDeleteManyProductsService(
   ids: string[] | number[],
   trx?: Knex.Transaction
 ) {
@@ -148,7 +148,7 @@ export async function softDeleteMultiProducts(
   return toDelete || null;
 }
 
-export async function getExistingProduct(data: Record<string, unknown>) {
+export async function getExistingProductService(data: Record<string, unknown>) {
   const product = await db
     .table('product')
     .select('id', 'name', 'is_deleted')
