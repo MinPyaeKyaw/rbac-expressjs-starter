@@ -13,6 +13,26 @@ import db from '../../db/db';
 import { Knex } from 'knex';
 import { ListQuery } from '../../types/types';
 import { v4 as uuidv4 } from 'uuid';
+import { addEmailJobs } from '../../queues/email-queue';
+
+export async function sendEmailToAllUsersController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    await addEmailJobs('user-email', ['minpyaekyaw419@gmail.com']);
+
+    responseData({
+      res,
+      status: 200,
+      message: 'Emails added to queue!',
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 export async function getAllUsersController(
   req: Request,

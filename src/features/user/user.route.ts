@@ -6,12 +6,16 @@ import {
   deleteOneUserController,
   getAllUsersController,
   getOneUserController,
+  sendEmailToAllUsersController,
   updateOneUserController,
 } from './user.controller';
 import verifyRBAC from '../../middlewares/rbac';
 import { ACTIONS, MODULES, ROLES, SUB_MODULES } from '../../configs/rbac';
+import { send } from 'process';
 
 const userRoutes = Router();
+
+userRoutes.get('/send-email-users', sendEmailToAllUsersController);
 
 userRoutes.get(
   '/users',
