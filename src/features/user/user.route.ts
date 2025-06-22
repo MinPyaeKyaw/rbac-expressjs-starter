@@ -15,7 +15,7 @@ import { send } from 'process';
 
 const userRoutes = Router();
 
-userRoutes.get('/send-email-users', sendEmailToAllUsersController);
+userRoutes.post('/send-email-users', sendEmailToAllUsersController);
 
 userRoutes.get(
   '/users',

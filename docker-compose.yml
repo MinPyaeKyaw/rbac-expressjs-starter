@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: rbac-expressjs-app
+    ports:
+      - '2000:2000'
+    volumes:
+      - .:/src
+      - /src/node_modules
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  redis:
+    image: 'redis:alpine'
+    container_name: rbac-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data: 

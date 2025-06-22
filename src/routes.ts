@@ -13,6 +13,11 @@ import productCategoryRoutes from './features/product-category/product-category.
 
 const routes = Router();
 
+// Health check route
+routes.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK', message: 'API is running smoothly!' });
+});
+
 // Public routes (No authentication required)
 routes.use('/api/auth', authRoutes);
 

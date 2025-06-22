@@ -6,6 +6,7 @@ import routes from './routes';
 import { errorHandler } from './middlewares/error-handler';
 import helmet from 'helmet';
 import './cron-jobs/sample-cron';
+import './external-services/redis';
 import { accessLogFormat, auditLogFormat } from './configs/log-formats';
 import auditLogStream from './middlewares/audit-log';
 import { upload } from './middlewares/multer-upload';
