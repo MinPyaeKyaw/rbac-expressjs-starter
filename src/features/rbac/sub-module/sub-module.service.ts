@@ -9,11 +9,6 @@ export async function getAllSubModulesService(
     module_id: string;
   }
 ) {
-  const pagination = getPagination({
-    page: filters.page as number,
-    size: filters.size as number,
-  });
-
   const query = db
     .table('sub_module')
     .select(
@@ -25,10 +20,18 @@ export async function getAllSubModulesService(
     )
     .leftJoin('channel', 'channel.id', 'sub_module.channel_id')
     .leftJoin('module', 'module.id', 'sub_module.module_id')
-    .where('sub_module.is_deleted', 0)
-    .limit(pagination.limit)
-    .offset(pagination.offset);
+    .where('sub_module.is_deleted', 0);
+
   const totalCountQuery = db.table('sub_module').count('* as count');
+
+  let pagination;
+  if (filters.page && filters.size) {
+    pagination = getPagination({
+      page: filters.page as number,
+      size: filters.size as number,
+    });
+    query.limit(pagination.limit).offset(pagination.offset);
+  }
 
   if (filters.sort) {
     query.orderBy(filters.sort, filters.order || 'asc');

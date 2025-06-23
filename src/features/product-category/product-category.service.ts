@@ -4,21 +4,23 @@ import { getPaginatedData, getPagination } from '../../utils/common';
 import { ListQuery } from '../../types/types';
 
 export async function getAllProductCategoriesService(filters: ListQuery) {
-  const pagination = getPagination({
-    page: filters.page as number,
-    size: filters.size as number,
-  });
-
   const query = db
     .table('product_category')
     .select(
       'product_category.id',
       'product_category.name',
       'product_category.is_deleted'
-    )
-    .limit(pagination.limit)
-    .offset(pagination.offset);
+    );
   const totalCountQuery = db.table('product_category').count('* as count');
+
+  let pagination;
+  if (filters.page && filters.size) {
+    pagination = getPagination({
+      page: filters.page as number,
+      size: filters.size as number,
+    });
+    query.limit(pagination.limit).offset(pagination.offset);
+  }
 
   if (filters.sort) {
     query.orderBy(filters.sort, filters.order || 'asc');

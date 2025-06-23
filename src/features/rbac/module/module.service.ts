@@ -110,11 +110,6 @@ export async function getModulesWithPermissionsService(
 export async function getAllModulesService(
   filters: ListQuery & { channel_id: string }
 ) {
-  const pagination = getPagination({
-    page: filters.page as number,
-    size: filters.size as number,
-  });
-
   const query = db
     .table('module')
     .select(
@@ -131,10 +126,17 @@ export async function getAllModulesService(
     .where('module.is_deleted', 0)
     .leftJoin('channel', 'channel.id', 'module.channel_id')
     .leftJoin('sub_module', 'sub_module.module_id', 'module.id')
-    .groupBy('module.id')
-    .limit(pagination.limit)
-    .offset(pagination.offset);
+    .groupBy('module.id');
   const totalCountQuery = db.table('module').count('* as count');
+
+  let pagination;
+  if (filters.page && filters.size) {
+    pagination = getPagination({
+      page: filters.page as number,
+      size: filters.size as number,
+    });
+    query.limit(pagination.limit).offset(pagination.offset);
+  }
 
   if (filters.sort) {
     query.orderBy(filters.sort, filters.order || 'asc');

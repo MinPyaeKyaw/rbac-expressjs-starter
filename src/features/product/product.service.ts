@@ -4,11 +4,6 @@ import { getPaginatedData, getPagination } from '../../utils/common';
 import { ListQuery } from '../../types/types';
 
 export async function getAllProductsService(filters: ListQuery) {
-  const pagination = getPagination({
-    page: filters.page as number,
-    size: filters.size as number,
-  });
-
   const query = db
     .table('product')
     .select(
@@ -20,10 +15,17 @@ export async function getAllProductsService(filters: ListQuery) {
         `JSON_OBJECT('id', product_category.id, 'name', product_category.name) as category`
       )
     )
-    .leftJoin('product_category', 'product_category.id', 'product.category_id')
-    .limit(pagination.limit)
-    .offset(pagination.offset);
+    .leftJoin('product_category', 'product_category.id', 'product.category_id');
   const totalCountQuery = db.table('product').count('* as count');
+
+  let pagination;
+  if (filters.page && filters.size) {
+    pagination = getPagination({
+      page: filters.page as number,
+      size: filters.size as number,
+    });
+    query.limit(pagination.limit).offset(pagination.offset);
+  }
 
   if (filters.sort) {
     query.orderBy(filters.sort, filters.order || 'asc');

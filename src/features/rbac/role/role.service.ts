@@ -4,18 +4,20 @@ import { getPaginatedData, getPagination } from '../../../utils/common';
 import { ListQuery } from '../../../types/types';
 
 export async function getAllRolesService(filters: ListQuery) {
-  const pagination = getPagination({
-    page: filters.page as number,
-    size: filters.size as number,
-  });
-
   const query = db
     .table('role')
     .select('id', 'name', 'is_deleted')
-    .where('is_deleted', 0)
-    .limit(pagination.limit)
-    .offset(pagination.offset);
+    .where('is_deleted', 0);
   const totalCountQuery = db.table('role').count('* as count');
+
+  let pagination;
+  if (filters.page && filters.size) {
+    pagination = getPagination({
+      page: filters.page as number,
+      size: filters.size as number,
+    });
+    query.limit(pagination.limit).offset(pagination.offset);
+  }
 
   if (filters.sort) {
     query.orderBy(filters.sort, filters.order || 'asc');

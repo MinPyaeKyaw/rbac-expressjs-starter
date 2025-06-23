@@ -4,8 +4,8 @@ const validator = {
   select: {
     query: Joi.object({
       keyword: Joi.string().allow('').optional(),
-      size: Joi.number().required(),
-      page: Joi.number().required(),
+      size: Joi.number().optional(),
+      page: Joi.number().optional(),
       sort: Joi.string().optional(),
       order: Joi.string().valid('asc', 'desc').optional(),
     }),

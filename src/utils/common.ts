@@ -21,10 +21,10 @@ export async function getPaginatedData<T>(
   query: any,
   countQuery: any,
   filters: ListQuery,
-  pagination: { limit: number; offset: number }
+  pagination?: { limit: number; offset: number }
 ): Promise<{
   data: T[];
-  pagination: {
+  meta: {
     page: number;
     size: number;
     totalCount: number;
@@ -36,12 +36,13 @@ export async function getPaginatedData<T>(
 
   // Calculate pagination data
   const totalCount = countResult[0].count;
-  const totalPages = Math.ceil(totalCount / pagination.limit);
+  let totalPages = 1;
+  if (pagination) totalPages = Math.ceil(totalCount / pagination.limit || 1);
 
   // Return the paginated data with pagination information
   return {
     data,
-    pagination: {
+    meta: {
       page: filters.page,
       size: filters.size,
       totalCount,
