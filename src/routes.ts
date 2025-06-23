@@ -10,6 +10,7 @@ import channelRoutes from './features/rbac/channel/channel.route';
 import moduleRoutes from './features/rbac/module/module.route';
 import subModuleRoutes from './features/rbac/sub-module/sub-module.route';
 import productCategoryRoutes from './features/product-category/product-category.route';
+import cachedProductCategoryRoutes from './features/cached-product-category/cached-product-category.route';
 
 const routes = Router();
 
@@ -29,6 +30,7 @@ routes.use('/api', verifyToken, roleRoutes);
 routes.use('/api', verifyToken, actionRoutes);
 routes.use('/api', verifyToken, permissionRoutes);
 routes.use('/api', verifyToken, productCategoryRoutes);
+routes.use('/api', verifyToken, cachedProductCategoryRoutes);
 routes.use('/api', verifyToken, productRoutes);
 routes.use('/api', verifyToken, userRoutes);
 
