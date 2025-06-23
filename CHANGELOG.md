@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/compare/v2.0.0...v2.0.1) (2025-06-23)
+
+
+### Features
+
+* **change-log:** added release note ([0204f7d](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/commit/0204f7dde005c73d3dc51a76c64b280c5648c6d0))
+
 ## [2.0.0](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/compare/v1.2.0...v2.0.0) (2025-06-23)
 
 ### Features
