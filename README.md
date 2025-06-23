@@ -16,7 +16,7 @@ A scalable Express.js project with TypeScript featuring CRUD with pagination, fi
 - **Access Logs** – Track all incoming requests for monitoring and debugging.
 - **Audit Logs** – Record data changes with before/after snapshots for critical actions.
 - **Cron Jobs** – Scheduled background tasks using node-cron.
-- **Job Queue** – Queued background tasks using BullMQ.
+- **Job Queue** – Queued background tasks using Redis & BullMQ.
 
 ## 🧱 Tech Stack
 
@@ -63,17 +63,20 @@ docker compose up --build
 ```
 
 This will:
+
 - Start a MySQL 8.0 database with the `rbac_express` schema automatically loaded
 - Start a Redis server for job queues
 - Build and start the Express.js application
 - Wait for MySQL to be ready before starting the app
 
 2. **Access the application**:
+
    - API Server: http://localhost:3000
    - MySQL Database: localhost:3306
    - Redis: localhost:6379
 
 3. **Default database credentials**:
+
    - Host: `localhost`
    - Port: `3306`
    - User: `root`
@@ -89,15 +92,18 @@ This will:
 If you prefer to run without Docker for development:
 
 1. **Install dependencies**:
+
 ```bash
 npm install
 ```
 
 2. **Set up environment variables**:
+
    - Copy `.env.example` to `.env` (if available)
    - Configure your local MySQL and Redis connections
 
 3. **Start the development server**:
+
 ```bash
 npm run dev
 ```
