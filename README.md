@@ -16,16 +16,18 @@ A scalable Express.js project with TypeScript featuring CRUD with pagination, fi
 - **Access Logs** – Track all incoming requests for monitoring and debugging.
 - **Audit Logs** – Record data changes with before/after snapshots for critical actions.
 - **Cron Jobs** – Scheduled background tasks using node-cron.
+- **Job Queue** – Queued background tasks using BullMQ.
 
 ## 🧱 Tech Stack
 
 - **Express.js** – Web framework
 - **TypeScript** – Static type-checking
-- **Mysql** – Database
+- **MySQL** – Database
 - **Knex** – Query Builder
 - **JWT** – Authentication
 - **Multer** – File uploads
 - **Node-Cron** – Scheduled jobs
+- **Redis & BullMQ** – Job Queue
 - **Morgan** – Logging
 - **Docker** - Containerization
 - **ESLint, Prettier** - Controlling code quality
@@ -40,35 +42,71 @@ A scalable Express.js project with TypeScript featuring CRUD with pagination, fi
 
 ## 🚀 Quick Start
 
+### Prerequisites
+
+- **Docker** - [Download Docker](https://www.docker.com/products/docker-desktop/) 🐳
+- **Docker Compose** - Usually comes with Docker Desktop
+
 ### Clone the repository
 
 ```bash
 git clone https://github.com/MinPyaeKyaw/rbac-expressjs-starter.git
+cd rbac-expressjs-starter
 ```
 
-### Prerequisites
+### Start the Application with Docker
 
-- **Node.js** (v16.x or higher) - [Download Node.js](https://nodejs.org/) 🌐
-- **MySQL** - [Download MySQL](https://dev.mysql.com/downloads/) 💾
-
-### Setting Up the Database
-
-1. Navigate to the `src/docs` folder – you'll find a SQL file named `rbac_express.sql`.
-2. Create a MySQL database named `rbac_express`.
-3. Run the SQL file in your database to create the required tables and seed data.
-
-### Setting Up env
-
-1. You'll find a .env.example file in the project root.
-2. Copy the file and rename it to .env.
+1. **Build and start all services** (MySQL, Redis, and the Express app):
 
 ```bash
-cp .env.example .env
+docker compose up --build
 ```
 
-3. Open the .env file and replace the placeholder values with your actual credentials.
+This will:
+- Start a MySQL 8.0 database with the `rbac_express` schema automatically loaded
+- Start a Redis server for job queues
+- Build and start the Express.js application
+- Wait for MySQL to be ready before starting the app
 
-### Initiating the Project
+2. **Access the application**:
+   - API Server: http://localhost:3000
+   - MySQL Database: localhost:3306
+   - Redis: localhost:6379
+
+3. **Default database credentials**:
+   - Host: `localhost`
+   - Port: `3306`
+   - User: `root`
+   - Password: `your db password`
+   - Database: `rbac_express`
+
+4. **Log in with these credentials**:
+   - Username: `sai min`
+   - Password: `saimin`
+
+### Development Mode (Optional)
+
+If you prefer to run without Docker for development:
+
+1. **Install dependencies**:
+```bash
+npm install
+```
+
+2. **Set up environment variables**:
+   - Copy `.env.example` to `.env` (if available)
+   - Configure your local MySQL and Redis connections
+
+3. **Start the development server**:
+```bash
+npm run dev
+```
+
+### 📄 API Documentation
+
+- **Postman Collection**: Available in `src/docs/rbac_express.postman_collection.json`
+- **Technical Documentation**: Read [here](src/docs/tech_docs.md)
+- **Database Schema**: Check `src/docs/rbac_express.sql`
 
 1. Run these commands
 
