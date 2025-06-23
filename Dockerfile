@@ -26,7 +26,7 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 
 # Step 9: Expose port (adjust based on your Express server port)
-EXPOSE 2000
+EXPOSE 3000
 
 # Step 10: Run the app
 CMD ["node", "dist/server.js"]
