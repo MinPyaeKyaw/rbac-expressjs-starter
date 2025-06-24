@@ -23,4 +23,12 @@ redisClient.on('error', (err) => {
   console.error('Redis connection error:', err);
 });
 
+// Cache invalidation
+export const invalidateCache = async (cachePrefix: string) => {
+  const keys = await redisClient.keys(`${cachePrefix}:*`);
+  if (keys.length > 0) {
+    await redisClient.del(...keys);
+  }
+};
+
 export default redisClient;

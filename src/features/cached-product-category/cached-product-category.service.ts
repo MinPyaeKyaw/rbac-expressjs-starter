@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 import db from '../../db/db';
-import redisClient from '../../external-services/redis';
+import redisClient, { invalidateCache } from '../../external-services/redis';
 import { getPaginatedData, getPagination } from '../../utils/common';
 import { ListQuery } from '../../types/types';
 
@@ -14,14 +14,6 @@ const getListCacheKey = (filters: ListQuery) => {
   return getCacheKey(`list:${Buffer.from(filterString).toString('base64')}`);
 };
 const getDetailCacheKey = (id: string | number) => getCacheKey(`detail:${id}`);
-
-// Cache invalidation
-const invalidateCache = async () => {
-  const keys = await redisClient.keys(`${CACHE_PREFIX}:*`);
-  if (keys.length > 0) {
-    await redisClient.del(...keys);
-  }
-};
 
 export async function getAllCachedProductCategoriesService(filters: ListQuery) {
   const cacheKey = getListCacheKey(filters);
@@ -109,7 +101,7 @@ export async function createOneCachedProductCategoryService(
   await query;
 
   // Invalidate cache after creation
-  await invalidateCache();
+  await invalidateCache(CACHE_PREFIX);
 
   return data;
 }
@@ -123,7 +115,7 @@ export async function createManyCachedProductCategoriesService(
   await query;
 
   // Invalidate cache after creation
-  await invalidateCache();
+  await invalidateCache(CACHE_PREFIX);
 
   return data;
 }
@@ -144,7 +136,7 @@ export async function updateOneCachedProductCategoryService(
   await query;
 
   // Invalidate cache after update
-  await invalidateCache();
+  await invalidateCache(CACHE_PREFIX);
 
   return query;
 }
@@ -163,7 +155,7 @@ export async function deleteOneCachedProductCategoryService(
   await query;
 
   // Invalidate cache after deletion
-  await invalidateCache();
+  await invalidateCache(CACHE_PREFIX);
 
   return toDelete[0] || null;
 }
@@ -182,7 +174,7 @@ export async function deleteManyCachedProductCategoriesService(
   await query;
 
   // Invalidate cache after deletion
-  await invalidateCache();
+  await invalidateCache(CACHE_PREFIX);
 
   return toDelete;
 }
@@ -205,7 +197,7 @@ export async function softDeleteOneCachedProductCategoryService(
     .where('id', id);
 
   // Invalidate cache after soft deletion
-  await invalidateCache();
+  await invalidateCache(CACHE_PREFIX);
 
   return toDelete[0] || null;
 }
@@ -227,7 +219,7 @@ export async function softDeleteManyCachedProductCategoriesService(
     .whereIn('id', ids);
 
   // Invalidate cache after soft deletion
-  await invalidateCache();
+  await invalidateCache(CACHE_PREFIX);
 
   return toDelete || null;
 }
@@ -244,7 +236,7 @@ export async function getExistingCachedProductCategoryService(
 
 // Cache management functions
 export async function clearProductCategoryCache() {
-  await invalidateCache();
+  await invalidateCache(CACHE_PREFIX);
   return { message: 'Product category cache cleared successfully' };
 }
 
