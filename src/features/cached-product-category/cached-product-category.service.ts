@@ -4,22 +4,12 @@ import redisClient, { invalidateCache } from '../../external-services/redis';
 import { getPaginatedData, getPagination } from '../../utils/common';
 import { ListQuery } from '../../types/types';
 
-const CACHE_PREFIX = 'product_category';
-const CACHE_TTL = 3600; // 1 hour in seconds
-
-// Cache key generators
-const getCacheKey = (key: string) => `${CACHE_PREFIX}:${key}`;
-const getListCacheKey = (filters: ListQuery) => {
-  const filterString = JSON.stringify(filters);
-  return getCacheKey(`list:${Buffer.from(filterString).toString('base64')}`);
-};
-const getDetailCacheKey = (id: string | number) => getCacheKey(`detail:${id}`);
+const CACHE_TTL = 3600;
+const CACHE_KEY = 'cached_product_category';
 
 export async function getAllCachedProductCategoriesService(filters: ListQuery) {
-  const cacheKey = getListCacheKey(filters);
-
   // Try to get from cache first
-  const cachedData = await redisClient.get(cacheKey);
+  const cachedData = await redisClient.get(CACHE_KEY);
   if (cachedData) {
     return JSON.parse(cachedData);
   }
@@ -62,20 +52,12 @@ export async function getAllCachedProductCategoriesService(filters: ListQuery) {
   );
 
   // Store in cache
-  await redisClient.setex(cacheKey, CACHE_TTL, JSON.stringify(result));
+  await redisClient.setex(CACHE_KEY, CACHE_TTL, JSON.stringify(result));
 
   return result;
 }
 
 export async function getOneCachedProductCategoryService(id: string | number) {
-  const cacheKey = getDetailCacheKey(id);
-
-  // Try to get from cache first
-  const cachedData = await redisClient.get(cacheKey);
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
-
   // If not in cache, fetch from database
   const product_category = await db
     .table('product_category')
@@ -83,11 +65,6 @@ export async function getOneCachedProductCategoryService(id: string | number) {
     .where('id', id);
 
   const result = product_category[0] || null;
-
-  // Store in cache (only if found)
-  if (result) {
-    await redisClient.setex(cacheKey, CACHE_TTL, JSON.stringify(result));
-  }
 
   return result;
 }
@@ -101,7 +78,7 @@ export async function createOneCachedProductCategoryService(
   await query;
 
   // Invalidate cache after creation
-  await invalidateCache(CACHE_PREFIX);
+  await invalidateCache(CACHE_KEY);
 
   return data;
 }
@@ -115,7 +92,7 @@ export async function createManyCachedProductCategoriesService(
   await query;
 
   // Invalidate cache after creation
-  await invalidateCache(CACHE_PREFIX);
+  await invalidateCache(CACHE_KEY);
 
   return data;
 }
@@ -136,7 +113,7 @@ export async function updateOneCachedProductCategoryService(
   await query;
 
   // Invalidate cache after update
-  await invalidateCache(CACHE_PREFIX);
+  await invalidateCache(CACHE_KEY);
 
   return query;
 }
@@ -155,7 +132,7 @@ export async function deleteOneCachedProductCategoryService(
   await query;
 
   // Invalidate cache after deletion
-  await invalidateCache(CACHE_PREFIX);
+  await invalidateCache(CACHE_KEY);
 
   return toDelete[0] || null;
 }
@@ -174,7 +151,7 @@ export async function deleteManyCachedProductCategoriesService(
   await query;
 
   // Invalidate cache after deletion
-  await invalidateCache(CACHE_PREFIX);
+  await invalidateCache(CACHE_KEY);
 
   return toDelete;
 }
@@ -197,7 +174,7 @@ export async function softDeleteOneCachedProductCategoryService(
     .where('id', id);
 
   // Invalidate cache after soft deletion
-  await invalidateCache(CACHE_PREFIX);
+  await invalidateCache(CACHE_KEY);
 
   return toDelete[0] || null;
 }
@@ -219,7 +196,7 @@ export async function softDeleteManyCachedProductCategoriesService(
     .whereIn('id', ids);
 
   // Invalidate cache after soft deletion
-  await invalidateCache(CACHE_PREFIX);
+  await invalidateCache(CACHE_KEY);
 
   return toDelete || null;
 }
@@ -236,12 +213,12 @@ export async function getExistingCachedProductCategoryService(
 
 // Cache management functions
 export async function clearProductCategoryCache() {
-  await invalidateCache(CACHE_PREFIX);
+  await invalidateCache(CACHE_KEY);
   return { message: 'Product category cache cleared successfully' };
 }
 
 export async function getProductCategoryCacheStats() {
-  const keys = await redisClient.keys(`${CACHE_PREFIX}:*`);
+  const keys = await redisClient.keys(`${CACHE_KEY}:*`);
   const stats = {
     totalKeys: keys.length,
     listKeys: keys.filter((key) => key.includes(':list:')).length,

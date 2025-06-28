@@ -16,7 +16,7 @@ const redisClient = new Redis({
 });
 
 redisClient.on('connect', () => {
-  console.log(`Redis connected to ${redisHost}:${redisPort}`);
+  console.log(`✅ Redis connected to ${redisHost}:${redisPort}`);
 });
 
 redisClient.on('error', (err) => {
