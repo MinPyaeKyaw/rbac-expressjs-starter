@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/compare/v2.0.1...v2.1.0) (2025-06-28)
+
+
+### Features
+
+* **redis-cache:** crud of product category ([d87d78f](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/commit/d87d78fe7221cfe4f96d768daeff7258e1851111))
+
+
+### Bug Fixes
+
+* **cached-product-category:** fixed cache key ([28c573f](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/commit/28c573f2489b45dab74e325a6d02b096c7995207))
+
 ### [2.0.1](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/compare/v2.0.0...v2.0.1) (2025-06-23)
 
 
