@@ -110,7 +110,7 @@ npm run dev
 
 ### 📄 API Documentation
 
-- **Postman Collection**: Available in `src/docs/rbac_express.postman_collection.json`
+- **API Documentation**: Read README.md in feature folders
 - **Technical Documentation**: Read [here](src/docs/tech_docs.md)
 - **Database Schema**: Check `src/docs/rbac_express.sql`
 

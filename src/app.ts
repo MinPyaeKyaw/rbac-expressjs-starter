@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import hpp from 'hpp';
 import routes from './routes';
 import { errorHandler } from './middlewares/error-handler';
 import helmet from 'helmet';
@@ -16,6 +17,9 @@ const app = express();
 
 // Middleware to set security-related HTTP headers
 app.use(helmet());
+
+// HPP middleware to prevent HTTP Parameter Pollution attacks
+app.use(hpp());
 
 // Enable CORS for all routes and origins
 app.use(cors());
