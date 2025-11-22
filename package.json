@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "nodemon --ext ts --exec ts-node src/server.ts",
     "start": "node dist/server.js",
+    "db:seed": "ts-node knex seed:run -x ts",
+    "db:migrate": "ts-node knex migrate:latest -x ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
