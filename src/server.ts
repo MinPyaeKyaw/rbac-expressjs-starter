@@ -7,11 +7,24 @@ import {
   emailQueue,
   connection as emailQueueConnection,
 } from './queues/email-queue';
-import { cronTask } from './cron-jobs/sample-cron';
+import {
+  startCronJobs,
+  stopCronJobs,
+  getCronTask,
+} from './cron-jobs/sample-cron';
 import { Server } from 'http';
 
 // Load environment variables from the .env file
 dotenv.config();
+
+// Start cron jobs only in development mode (when running with npm run dev)
+// In production (npm start), NODE_ENV should be set to 'production'
+const isDevelopment =
+  !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+if (isDevelopment) {
+  startCronJobs();
+  console.log('✅ Cron jobs enabled (development mode)');
+}
 
 // Define the server port: use the PORT from environment variables or default to 3000
 const PORT = process.env.PORT || 3000;
@@ -73,10 +86,12 @@ async function gracefulShutdown(signal: string): Promise<void> {
       })
   );
 
-  // Stop cron jobs
+  // Stop cron jobs (only if they were started)
   try {
-    cronTask.stop();
-    console.log('✅ Cron jobs stopped');
+    const cronTask = getCronTask();
+    if (cronTask) {
+      stopCronJobs();
+    }
   } catch (err) {
     console.error('❌ Error stopping cron jobs:', err);
   }

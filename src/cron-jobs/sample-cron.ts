@@ -10,10 +10,33 @@ const CRON_INTERVALS = {
   ONE_MONTH: '0 0 1 * *', // At 00:00 on the 1st day of every month
 } as const;
 
-const cronTask = cron.schedule(CRON_INTERVALS.ONE_MIN, () => {
-  console.log('Cron job running every minute');
-  // You can replace this with your task, such as sending an email, cleaning up data, etc.
-});
+let cronTask: cron.ScheduledTask | null = null;
 
-// Export cron task for graceful shutdown
-export { cronTask };
+// Function to start cron jobs
+export function startCronJobs(): cron.ScheduledTask {
+  if (cronTask) {
+    return cronTask;
+  }
+
+  cronTask = cron.schedule(CRON_INTERVALS.ONE_MIN, () => {
+    console.log('Cron job running every minute');
+    // You can replace this with your task, such as sending an email, cleaning up data, etc.
+  });
+
+  console.log('✅ Cron jobs started');
+  return cronTask;
+}
+
+// Function to stop cron jobs
+export function stopCronJobs(): void {
+  if (cronTask) {
+    cronTask.stop();
+    cronTask = null;
+    console.log('✅ Cron jobs stopped');
+  }
+}
+
+// Export cron task getter for graceful shutdown
+export function getCronTask(): cron.ScheduledTask | null {
+  return cronTask;
+}

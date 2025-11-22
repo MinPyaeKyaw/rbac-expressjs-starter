@@ -9,8 +9,6 @@ import helmet from 'helmet';
 import { accessLogFormat, auditLogFormat } from './configs/log-formats';
 import auditLogStream from './middlewares/audit-log';
 import { upload } from './middlewares/multer-upload';
-import './cron-jobs/sample-cron';
-import './services/redis';
 
 // Initialize the Express application
 const app = express();
