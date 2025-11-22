@@ -1,7 +1,7 @@
 import app from './app';
 import dotenv from 'dotenv';
 import db from './db/db';
-import redisClient from './external-services/redis';
+import redisClient from './services/redis';
 import {
   worker,
   emailQueue,

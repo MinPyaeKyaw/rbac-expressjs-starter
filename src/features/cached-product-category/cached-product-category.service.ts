@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 import db from '../../db/db';
-import redisClient, { invalidateCache } from '../../external-services/redis';
+import redisClient, { invalidateCache } from '../../services/redis';
 import { getPaginatedData, getPagination } from '../../utils/common';
 import { ListQuery } from '../../types/types';
 
