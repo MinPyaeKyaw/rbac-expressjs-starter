@@ -40,3 +40,6 @@ worker.on('completed', (job: any) => {
 worker.on('failed', (job: any, err: any) => {
   console.error(`❌ Failed to send email: ${job.id}`, err);
 });
+
+// Export worker, queue, and connection for graceful shutdown
+export { worker, emailQueue, connection };

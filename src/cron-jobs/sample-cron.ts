@@ -10,7 +10,10 @@ const CRON_INTERVALS = {
   ONE_MONTH: '0 0 1 * *', // At 00:00 on the 1st day of every month
 } as const;
 
-cron.schedule(CRON_INTERVALS.ONE_MIN, () => {
+const cronTask = cron.schedule(CRON_INTERVALS.ONE_MIN, () => {
   console.log('Cron job running every minute');
   // You can replace this with your task, such as sending an email, cleaning up data, etc.
 });
+
+// Export cron task for graceful shutdown
+export { cronTask };
