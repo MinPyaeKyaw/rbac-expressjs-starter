@@ -1,6 +1,6 @@
 {
   "name": "express-ts-feature-based",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon --ext ts --exec ts-node src/server.ts",

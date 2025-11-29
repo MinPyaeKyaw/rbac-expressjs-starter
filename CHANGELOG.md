@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/compare/v2.2.1...v2.3.0) (2025-11-29)
+
+
+### Features
+
+* added graceful shutdown ([05e40f9](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/commit/05e40f90a7ad5c8c93124007ae8340e7be973499))
+* added seeds and migration schema ([d9ee25f](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/commit/d9ee25ff5e562b6ebaa73dcda1ceb8a21dc5a00a))
+* init seed & migration ([9d82b2a](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/commit/9d82b2abf4b9261670cc87bdc31cd9c4acb19255))
+
 ### [2.2.1](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/compare/v2.2.0...v2.2.1) (2025-07-13)
 
 ## [2.2.0](https://github.com/MinPyaeKyaw/rbac-expressjs-starter/compare/v2.1.0...v2.2.0) (2025-07-13)
