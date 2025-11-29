@@ -115,8 +115,15 @@ async function gracefulShutdown(signal: string): Promise<void> {
       .then(() => {
         console.log('✅ Database connection closed');
       })
-      .catch((err) => {
-        console.error('❌ Error closing database connection:', err);
+      .catch((err: any) => {
+        // Ignore "aborted" errors during shutdown as they're expected when destroying the pool
+        if (err?.message === 'aborted' || err?.code === 'ABORT_ERR') {
+          console.log(
+            '✅ Database connection pool aborted (expected during shutdown)'
+          );
+        } else {
+          console.error('❌ Error closing database connection:', err);
+        }
       })
   );
 

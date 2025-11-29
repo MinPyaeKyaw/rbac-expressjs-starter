@@ -24,9 +24,25 @@ WORKDIR /app
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
+# Copy source files needed for migrations and seeds
+COPY --from=builder /app/migrations ./migrations
+COPY --from=builder /app/seeds ./seeds
+COPY --from=builder /app/knexfile.ts ./knexfile.ts
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/src ./src
 
-# Step 9: Expose port (adjust based on your Express server port)
+# Step 9: Install mysql client for health checks
+RUN apk add --no-cache mysql-client
+
+# Step 10: Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Step 11: Expose port (adjust based on your Express server port)
 EXPOSE 3000
 
-# Step 10: Run the app
+# Step 12: Set entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Step 13: Run the app
 CMD ["node", "dist/server.js"]

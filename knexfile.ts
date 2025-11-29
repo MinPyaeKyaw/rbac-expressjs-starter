@@ -9,7 +9,7 @@ const config: { [key: string]: Knex.Config } = {
     client: 'mysql2',
     connection: {
       host: process.env.DB_HOST,
-      port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+      port: parseInt(process.env.DB_PORT || '3306'),
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
@@ -26,10 +26,13 @@ const config: { [key: string]: Knex.Config } = {
     client: 'mysql2',
     connection: {
       host: process.env.DB_HOST,
-      port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+      port: parseInt(process.env.DB_PORT || '3306'),
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
+    },
+    seeds: {
+      directory: './seeds',
     },
     migrations: {
       tableName: 'knex_migrations',
@@ -40,7 +43,7 @@ const config: { [key: string]: Knex.Config } = {
     client: 'mysql2',
     connection: {
       host: process.env.DB_HOST,
-      port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+      port: parseInt(process.env.DB_PORT || '3306'),
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,

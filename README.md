@@ -56,36 +56,70 @@ cd rbac-expressjs-starter
 
 ### Start the Application with Docker
 
-1. **Build and start all services** (MySQL, Redis, and the Express app):
+1. **Configure database credentials** (Optional but recommended):
+
+   Before starting, you may want to update the database credentials in `docker-compose.yml` for security:
+
+   - Open `docker-compose.yml`
+   - Update the MySQL service environment variables:
+     - `MYSQL_ROOT_PASSWORD` - Set your MySQL root password
+     - `MYSQL_PASSWORD` - Set your MySQL user password (should match `MYSQL_ROOT_PASSWORD` if using root)
+   - Update the app service environment variables to match:
+     - `DB_USER` - MySQL username (default: `root`)
+     - `DB_PASSWORD` - MySQL password (must match `MYSQL_ROOT_PASSWORD`)
+   - Update the MySQL healthcheck password to match your `MYSQL_ROOT_PASSWORD`
+
+   **Example:**
+
+   ```yaml
+   mysql:
+     environment:
+       - MYSQL_ROOT_PASSWORD=your_secure_password
+       - MYSQL_PASSWORD=your_secure_password
+
+   app:
+     environment:
+       - DB_USER=root
+       - DB_PASSWORD=your_secure_password
+   ```
+
+2. **Build and start all services** (MySQL, Redis, and the Express app):
 
 ```bash
 docker compose up --build
 ```
 
-This will:
+This will automatically:
 
-- Start a MySQL 8.0 database with the `rbac_express` schema automatically loaded
+- Start a MySQL 8.0 database
 - Start a Redis server for job queues
+- Wait for MySQL to be ready (healthcheck)
+- **Automatically run database migrations** to create all tables
+- **Automatically run database seeds** to populate initial data
 - Build and start the Express.js application
-- Wait for MySQL to be ready before starting the app
 
-2. **Access the application**:
+3. **Access the application**:
 
    - API Server: http://localhost:3000
    - MySQL Database: localhost:3306
    - Redis: localhost:6379
 
-3. **Default database credentials**:
+4. **Log in with these credentials** (from seed data):
 
-   - Host: `localhost`
-   - Port: `3306`
-   - User: `root`
-   - Password: `your db password`
-   - Database: `rbac_express`
+   The seeds run automatically, so you can immediately log in with any of these test users:
 
-4. **Log in with these credentials**:
-   - Username: `sai min`
-   - Password: `saimin`
+   - **Admin User**
+     - Username: `admin`
+     - Password: `admin123`
+   - **Super Admin User**
+     - Username: `superadmin`
+     - Password: `admin123`
+   - **Developer User**
+     - Username: `developer`
+     - Password: `password123`
+   - **Test User**
+     - Username: `testuser`
+     - Password: `password123`
 
 ### Development Mode (Optional)
 
@@ -102,33 +136,36 @@ npm install
    - Copy `.env.example` to `.env` (if available)
    - Configure your local MySQL and Redis connections
 
-3. **Start the development server**:
+3. **Run database migrations and seeds**:
+
+```bash
+# Run migrations to create database tables
+npm run db:migrate
+
+# Run seeds to populate initial data
+npm run db:seed
+```
+
+4. **Start the development server**:
 
 ```bash
 npm run dev
 ```
+
+**Note**:
+
+- When using Docker, migrations and seeds run automatically on container startup
+- Do not run SQL schema files directly. Always use migrations to manage your database schema
 
 ### 📄 API Documentation
 
 - **API Documentation**: Read README.md in feature folders
 - **Technical Documentation**: Read [here](src/docs/tech_docs.md)
-- **Database Schema**: Check `src/docs/rbac_express.sql`
 
-1. Run these commands
+### 📄 Additional Resources
 
-```bash
-cd rbac-expressjs-starter
-npm install
-npm run dev
-```
-
-2. Log in with this credential
-
-   - username - sai min
-   - password - saimin
-
-3. 📄 Postman collection can be found in `src/docs` folder. Get [here](src/docs/rbac_express.postman_collection.
-4. 📝 Read detailed technical documentation [here](src/docs/tech_docs.md)
+1. 📄 Postman collection can be found in `src/docs` folder. Get [here](src/docs/rbac_express.postman_collection.
+2. 📝 Read detailed technical documentation [here](src/docs/tech_docs.md)
 
 ## 👨‍💻 Author
 

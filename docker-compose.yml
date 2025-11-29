@@ -1,14 +1,14 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
     build: .
     container_name: rbac-expressjs-app
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
-      - .:/src
-      - /src/node_modules
+      - .:/app
+      - /app/node_modules
     depends_on:
       redis:
         condition: service_started
@@ -19,25 +19,25 @@ services:
       - REDIS_PORT=6379
       - DB_HOST=mysql
       - DB_PORT=3306
-      - DB_USER=rbac_user
-      - DB_PASSWORD=rbac_password
+      - DB_USER=root
+      - DB_PASSWORD=41199smpK
       - DB_NAME=rbac_express
     restart: unless-stopped
 
   redis:
-    image: 'redis:alpine'
+    image: "redis:alpine"
     container_name: rbac-redis
     ports:
-      - '6379:6379'
+      - "6379:6379"
     volumes:
       - redis-data:/data
     restart: unless-stopped
 
   mysql:
-    image: 'mysql:8.0'
+    image: "mysql:8.0"
     container_name: rbac-mysql
     ports:
-      - '3306:3306'
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=41199smpK
       - MYSQL_DATABASE=rbac_express
@@ -45,10 +45,19 @@ services:
       - MYSQL_PASSWORD=41199smpK
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./src/docs/rbac_express.sql:/docker-entrypoint-initdb.d/rbac_express.sql
     command: --default-authentication-plugin=mysql_native_password
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "rbac_user", "-prbac_password"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p41199smpK",
+        ]
       timeout: 20s
       retries: 10
       interval: 10s
@@ -57,4 +66,4 @@ services:
 
 volumes:
   redis-data:
-  mysql-data: 
+  mysql-data:
